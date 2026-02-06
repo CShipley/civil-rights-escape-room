@@ -4,45 +4,53 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Civil Rights Escape Room</title>
+
+  <!-- Digital / typewriter vibe -->
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Special+Elite&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --ink:#f3f7ff;
-      --muted:#d0dcff;
+      --ink:#f6f8ff;
+      --muted:#d6e0ff;
 
-      /* Sapphire glass (clickable) */
-      --blueGlassA: rgba(59, 130, 246, .28);
-      --blueGlassB: rgba(96, 165, 250, .18);
-      --blueLine: rgba(147, 197, 253, .55);
-      --blueGlow: rgba(59, 130, 246, .45);
+      /* Sapphire glass (CLICKABLE) */
+      --blueA: rgba(59,130,246,.40);
+      --blueB: rgba(96,165,250,.18);
+      --blueLine: rgba(191,219,254,.75);
+      --blueGlow: rgba(59,130,246,.55);
 
-      /* Red glass (non-clickable info) */
-      --redGlassA: rgba(239, 68, 68, .22);
-      --redGlassB: rgba(248, 113, 113, .14);
-      --redLine: rgba(252, 165, 165, .55);
-      --redGlow: rgba(239, 68, 68, .35);
+      /* Red glass (NON-CLICKABLE description/info) */
+      --redA: rgba(239,68,68,.26);
+      --redB: rgba(248,113,113,.14);
+      --redLine: rgba(252,165,165,.65);
+      --redGlow: rgba(239,68,68,.40);
 
-      --neutralGlass: rgba(255,255,255,.08);
-      --neutralLine: rgba(255,255,255,.14);
+      /* Room readability fix */
+      --roomBgA: rgba(12,12,14,.88);
+      --roomBgB: rgba(0,0,0,.70);
 
-      --good:#22c55e;
-      --bad:#ef4444;
-      --warn:#f59e0b;
+      --good: rgba(34,197,94,.28);
+      --goodLine: rgba(34,197,94,.75);
 
-      --radius:18px;
-      --shadow: 0 16px 40px rgba(0,0,0,.45);
-      --shadowSoft: 0 10px 26px rgba(0,0,0,.28);
+      --bad: rgba(239,68,68,.28);
+      --badLine: rgba(239,68,68,.80);
+
+      --radius: 18px;
+      --shadow: 0 22px 52px rgba(0,0,0,.75);
+      --shadowSoft: 0 14px 34px rgba(0,0,0,.35);
     }
 
     *{box-sizing:border-box}
-    html, body{height:100%}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--ink);
-      /* BACKGROUND IMAGE (upload as civil-rights-leaders.png in repo root) */
+      font-family: "Share Tech Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+      /* Image background + controlled overlay (won't crush readability) */
       background:
-        radial-gradient(1200px 900px at 15% 0%, rgba(37, 99, 235,.35) 0%, rgba(0,0,0,.55) 55%),
-        linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.75)),
+        radial-gradient(1200px 900px at 12% 0%, rgba(37,99,235,.20) 0%, rgba(0,0,0,.46) 58%),
+        linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.72)),
         url("civil-rights-leaders.png");
       background-size: cover;
       background-position: center;
@@ -50,139 +58,152 @@
       overflow-x:hidden;
     }
 
-    /* subtle "pathway" overlay */
+    /* subtle pathway texture */
     body:before{
       content:"";
       position:fixed; inset:0;
       pointer-events:none;
+      opacity:.22;
       background:
-        radial-gradient(800px 220px at 50% 110%, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 70%),
-        linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,0) 18%, rgba(255,255,255,0) 82%, rgba(255,255,255,.05)),
-        repeating-linear-gradient(180deg, rgba(255,255,255,.08) 0 1px, rgba(255,255,255,0) 1px 18px);
+        radial-gradient(900px 260px at 50% 110%, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 72%),
+        repeating-linear-gradient(180deg, rgba(255,255,255,.07) 0 1px, rgba(255,255,255,0) 1px 18px);
       mix-blend-mode: overlay;
-      opacity:.30;
     }
 
     header{
-      position:sticky; top:0; z-index:5;
+      position:sticky; top:0; z-index:10;
       padding:16px 14px;
       backdrop-filter: blur(10px);
-      background: rgba(0,0,0,.30);
-      border-bottom: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.35);
+      border-bottom: 1px solid rgba(255,255,255,.18);
     }
-    .wrap{max-width:1100px; margin:0 auto}
+
+    .wrap{max-width:1120px; margin:0 auto}
     .row{display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap}
 
-    h1{margin:0; font-size:18px; letter-spacing:.3px}
-    .sub{margin-top:6px; font-size:13px; color:var(--muted); max-width:900px}
-
-    /* Red glass: non-clickable description blocks */
-    .glassRed{
-      border-radius: 999px;
-      padding: 7px 12px;
-      border: 1px solid var(--redLine);
-      background: linear-gradient(135deg, var(--redGlassA), var(--redGlassB));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 10px 20px rgba(0,0,0,.25);
-      color: #ffe3e3;
-      font-size:12px;
-      backdrop-filter: blur(12px);
+    h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:1px;
+      font-family: "Special Elite", system-ui, sans-serif;
     }
+    .sub{margin-top:6px; font-size:13px; color:var(--muted); line-height:1.35}
 
-    /* Path / breadcrumb */
-    .crumbs{
-      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
-      font-size:12px; color:rgba(255,255,255,.82);
-    }
+    .crumbs{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px}
     .crumb{
-      padding:6px 10px;
+      padding:7px 12px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.18);
-      backdrop-filter: blur(8px);
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.20);
+      backdrop-filter: blur(10px);
+      font-size:12px;
     }
     .crumb strong{color:#fff}
+
+    /* NON-clickable red glass pill */
+    .glassRedPill{
+      border-radius:999px;
+      padding:7px 12px;
+      border:1px solid var(--redLine);
+      background: linear-gradient(135deg, var(--redA), var(--redB));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 10px 20px rgba(0,0,0,.25);
+      color:#ffe1e1;
+      font-size:12px;
+      backdrop-filter: blur(12px);
+      white-space:nowrap;
+    }
+
     .progressWrap{min-width:240px; flex:1; max-width:420px}
     .progress{
-      height:10px; background:rgba(255,255,255,.10);
-      border-radius:999px; overflow:hidden;
-      border:1px solid rgba(255,255,255,.14);
+      height:10px;
+      background: rgba(255,255,255,.10);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.16);
     }
     .bar{
-      height:100%; width:0%;
-      background: linear-gradient(90deg, rgba(59,130,246,.95), rgba(167,139,250,.95));
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(59,130,246,.95), rgba(167,139,250,.92));
       box-shadow: 0 0 18px rgba(59,130,246,.55);
       transition: width .35s ease;
     }
 
-    main{padding:18px 14px 44px}
-    .grid{display:grid; grid-template-columns: 340px 1fr; gap:14px}
-    @media (max-width: 950px){ .grid{grid-template-columns:1fr} }
+    main{padding:18px 14px 46px}
+    .grid{display:grid; grid-template-columns: 360px 1fr; gap:16px}
+    @media(max-width: 980px){ .grid{grid-template-columns:1fr} }
 
-    /* Panels: give them red glass because they are mostly non-clickable framing */
+    /* Left panel frame (non-clickable container = red glass vibe) */
     .panel{
       border-radius: var(--radius);
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.26);
       backdrop-filter: blur(14px);
       box-shadow: var(--shadowSoft);
       overflow:hidden;
     }
     .panel h2{
       margin:0;
-      font-size:14px;
       padding:12px 14px;
-      border-bottom:1px solid rgba(255,255,255,.14);
-      background: linear-gradient(135deg, var(--redGlassA), rgba(0,0,0,.12));
-      color:#ffe2e2;
+      font-size:14px;
+      letter-spacing:.7px;
+      background: linear-gradient(135deg, var(--redA), rgba(0,0,0,.14));
+      border-bottom:1px solid rgba(255,255,255,.16);
+      color:#ffe3e3;
+      font-family:"Special Elite", system-ui, sans-serif;
     }
     .panel .content{padding:12px 14px}
 
-    /* Stages pathway list */
-    .pathTitle{
-      font-size:12px; color:rgba(255,255,255,.86);
-      margin:0 0 10px;
-    }
-    .stages{display:flex; flex-direction:column; gap:10px; position:relative; padding-left:10px}
+    .pathTitle{margin:0 0 10px; font-size:12px; color:rgba(255,255,255,.86)}
+    .stages{display:flex; flex-direction:column; gap:10px; position:relative; padding-left:12px}
     .stages:before{
       content:"";
-      position:absolute; left:8px; top:6px; bottom:6px;
-      width:3px;
-      background: linear-gradient(180deg, rgba(59,130,246,.7), rgba(239,68,68,.4));
-      border-radius:999px;
-      opacity:.8;
+      position:absolute; left:9px; top:6px; bottom:6px;
+      width:3px; border-radius:999px;
+      background: linear-gradient(180deg, rgba(59,130,246,.85), rgba(239,68,68,.50));
       box-shadow: 0 0 12px rgba(59,130,246,.25);
+      opacity:.85;
     }
 
-    /* Blue glass bubble buttons */
+    /* CLICKABLE sapphire glass buttons */
     button, .stageBtn{
       cursor:pointer;
       border-radius: 999px;
       padding: 10px 12px;
       border: 1px solid var(--blueLine);
-      background: linear-gradient(135deg, var(--blueGlassA), var(--blueGlassB));
+      background: linear-gradient(135deg, var(--blueA), var(--blueB));
       color: var(--ink);
-      font-weight: 750;
+      font-weight: 800;
       font-size: 13px;
-      letter-spacing:.2px;
+      letter-spacing:.3px;
       box-shadow:
         0 0 0 1px rgba(255,255,255,.06) inset,
-        0 14px 30px rgba(0,0,0,.28),
-        0 0 22px rgba(59,130,246,.18);
+        0 16px 34px rgba(0,0,0,.28),
+        0 0 24px rgba(59,130,246,.18);
       backdrop-filter: blur(14px);
       transition: transform .05s ease, box-shadow .2s ease, border-color .2s ease, filter .2s ease;
+      font-family: inherit;
     }
     button:hover, .stageBtn:hover{
-      border-color: rgba(191,219,254,.85);
+      border-color: rgba(219,234,254,.95);
       box-shadow:
         0 0 0 1px rgba(255,255,255,.08) inset,
-        0 18px 34px rgba(0,0,0,.34),
-        0 0 26px rgba(59,130,246,.28);
+        0 20px 38px rgba(0,0,0,.34),
+        0 0 28px rgba(59,130,246,.28);
       filter: saturate(1.15);
     }
-    button:active, .stageBtn:active{transform: translateY(1px)}
+    button:active, .stageBtn:active{transform:translateY(1px)}
     button:disabled, .stageBtn[disabled]{
       opacity:.45; cursor:not-allowed; filter: grayscale(.2);
       box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 10px 20px rgba(0,0,0,.22);
+    }
+    button.primary{
+      border-color: rgba(219,234,254,.98);
+      background: linear-gradient(135deg, rgba(59,130,246,.52), rgba(167,139,250,.22));
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.09) inset,
+        0 22px 44px rgba(0,0,0,.36),
+        0 0 34px rgba(59,130,246,.30);
     }
 
     .stageBtn{
@@ -191,149 +212,147 @@
       display:flex;
       gap:10px;
       align-items:flex-start;
-      padding: 10px 12px;
+      padding:10px 12px;
       border-radius: 18px;
     }
 
-    /* pathway node */
+    /* Path node */
     .dot{
       width:14px; height:14px; border-radius:50%;
       margin-top:2px;
       border:1px solid rgba(255,255,255,.22);
       background: rgba(255,255,255,.10);
-      box-shadow: 0 0 0 4px rgba(0,0,0,.15);
+      box-shadow: 0 0 0 4px rgba(0,0,0,.18);
+      flex:0 0 auto;
     }
     .dot.done{
       background: rgba(34,197,94,.30);
       border-color: rgba(34,197,94,.85);
-      box-shadow: 0 0 14px rgba(34,197,94,.35), 0 0 0 4px rgba(0,0,0,.15);
+      box-shadow: 0 0 14px rgba(34,197,94,.35), 0 0 0 4px rgba(0,0,0,.18);
     }
     .dot.live{
       background: rgba(59,130,246,.35);
-      border-color: rgba(191,219,254,.95);
-      box-shadow: 0 0 16px rgba(59,130,246,.45), 0 0 0 4px rgba(0,0,0,.15);
+      border-color: rgba(219,234,254,.98);
+      box-shadow: 0 0 16px rgba(59,130,246,.45), 0 0 0 4px rgba(0,0,0,.18);
+    }
+    .stageTitle{font-weight:900; font-size:13px; margin:0}
+    .stageDesc{font-size:12px; margin:4px 0 0; color:rgba(237,245,255,.90); line-height:1.25}
+
+    /* RIGHT ROOM (fix: strong readable backdrop + min-height + big shadow) */
+    .card{
+      min-height: 560px;
+      border-radius: 22px;
+      padding: 18px;
+      border: 2px solid rgba(255,255,255,.22);
+      background: linear-gradient(135deg, var(--roomBgA), var(--roomBgB));
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
     }
 
-    .stageTitle{font-weight:800; font-size:13px; margin:0}
-    .stageDesc{font-size:12px; margin:4px 0 0; color:rgba(233, 243, 255, .86); line-height:1.25}
-
-    /* Stage area card: red glass "room" framing (non-clickable) */
-   .card{
-  border-radius: var(--radius);
-  padding: 18px;
-  border: 1px solid rgba(255,255,255,.22);
-  background: linear-gradient(
-    135deg,
-    rgba(20,20,20,.75),
-    rgba(0,0,0,.55)
-  );
-  backdrop-filter: blur(18px);
-  box-shadow: 0 22px 48px rgba(0,0,0,.65);
-  position:relative;
-  overflow:hidden;
-}
-
-    /* Room transition effect */
-    .card.roomFade{
-      animation: roomFade .32s ease;
-    }
+    /* Room transition */
+    .card.roomFade{ animation: roomFade .30s ease; }
     @keyframes roomFade{
-      from{ opacity:.20; transform: translateX(10px); filter: blur(2px); }
-      to{ opacity:1; transform: translateX(0); filter: blur(0); }
+      from{opacity:.15; transform: translateX(12px); filter: blur(2px);}
+      to{opacity:1; transform: translateX(0); filter: blur(0);}
     }
 
-    /* Top banner inside stage area (non-clickable red glass) */
+    /* NON-clickable red glass banner inside room */
     .roomBanner{
-      border-radius: 16px;
+      border-radius: 18px;
       border: 1px solid var(--redLine);
-      background: linear-gradient(135deg, var(--redGlassA), var(--redGlassB));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 16px 30px rgba(0,0,0,.25);
+      background: linear-gradient(135deg, var(--redA), rgba(0,0,0,.18));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 18px 36px rgba(0,0,0,.30);
       padding: 12px 14px;
       margin-bottom: 12px;
       backdrop-filter: blur(16px);
     }
-    .roomBanner h3{margin:0 0 6px; font-size:17px; letter-spacing:.2px}
+    .roomBanner h3{
+      margin:0 0 6px;
+      font-size:18px;
+      letter-spacing:1px;
+      font-family:"Special Elite", system-ui, sans-serif;
+    }
     .roomBanner p{margin:0; color:#ffe3e3; line-height:1.35}
 
-    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-
-    /* Primary button still “blue glass” but punchier */
-    button.primary{
-      border-color: rgba(191,219,254,.95);
-      background: linear-gradient(135deg, rgba(59,130,246,.42), rgba(167,139,250,.22));
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.08) inset,
-        0 18px 36px rgba(0,0,0,.35),
-        0 0 30px rgba(59,130,246,.28);
-    }
-
-    /* Non-clickable info boxes = red glass */
+    /* NON-clickable info/status blocks = red glass by default */
     .status{
       margin-top:12px;
       padding:12px 14px;
       border-radius:16px;
       border:1px solid var(--redLine);
-      background: linear-gradient(135deg, var(--redGlassA), var(--redGlassB));
+      background: linear-gradient(135deg, var(--redA), var(--redB));
       color:#ffe3e3;
       backdrop-filter: blur(16px);
-      box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 16px 28px rgba(0,0,0,.22);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 18px 34px rgba(0,0,0,.26);
     }
     .status.good{
-      border-color: rgba(34,197,94,.75);
-      background: linear-gradient(135deg, rgba(34,197,94,.22), rgba(34,197,94,.10));
-      color: #e7ffef;
+      border-color: var(--goodLine);
+      background: linear-gradient(135deg, var(--good), rgba(0,0,0,.12));
+      color:#e9ffef;
     }
     .status.bad{
-      border-color: rgba(239,68,68,.80);
-      background: linear-gradient(135deg, rgba(239,68,68,.25), rgba(239,68,68,.12));
-      color: #ffe3e3;
+      border-color: var(--badLine);
+      background: linear-gradient(135deg, var(--bad), rgba(0,0,0,.12));
+      color:#ffe3e3;
     }
+
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
 
     .twoCol{display:grid; grid-template-columns:1fr 1fr; gap:12px}
     @media (max-width: 760px){ .twoCol{grid-template-columns:1fr} }
 
     .list{display:flex; flex-direction:column; gap:8px}
 
-    /* Clickable matching items: blue glass (because they are interactive) */
+    /* Clickable matching items: sapphire glass */
     .item{
       padding:10px 12px;
       border-radius: 16px;
-      border: 1px solid rgba(147,197,253,.35);
-      background: linear-gradient(135deg, rgba(59,130,246,.18), rgba(0,0,0,.12));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset, 0 10px 22px rgba(0,0,0,.18);
+      border: 1px solid rgba(219,234,254,.35);
+      background: linear-gradient(135deg, rgba(59,130,246,.20), rgba(0,0,0,.12));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset, 0 12px 24px rgba(0,0,0,.20);
       cursor:pointer;
       transition: border-color .15s ease, background .15s ease, transform .05s ease, filter .2s ease;
       backdrop-filter: blur(12px);
     }
-    .item:hover{border-color: rgba(191,219,254,.75); filter:saturate(1.12)}
+    .item:hover{border-color: rgba(219,234,254,.85); filter:saturate(1.12)}
     .item:active{transform: translateY(1px)}
     .item.selected{
-      border-color: rgba(191,219,254,.95);
-      background: linear-gradient(135deg, rgba(59,130,246,.28), rgba(167,139,250,.14));
-      box-shadow: 0 0 18px rgba(59,130,246,.25), 0 0 0 1px rgba(255,255,255,.06) inset;
+      border-color: rgba(219,234,254,.98);
+      background: linear-gradient(135deg, rgba(59,130,246,.34), rgba(167,139,250,.16));
+      box-shadow: 0 0 20px rgba(59,130,246,.28), 0 0 0 1px rgba(255,255,255,.06) inset;
     }
     .item.correct{
       cursor:default;
-      border-color: rgba(34,197,94,.9);
-      background: linear-gradient(135deg, rgba(34,197,94,.22), rgba(0,0,0,.12));
+      border-color: rgba(34,197,94,.90);
+      background: linear-gradient(135deg, rgba(34,197,94,.26), rgba(0,0,0,.12));
       box-shadow: 0 0 18px rgba(34,197,94,.25), 0 0 0 1px rgba(255,255,255,.06) inset;
     }
     .item.wrong{
-      border-color: rgba(239,68,68,.85);
-      background: linear-gradient(135deg, rgba(239,68,68,.22), rgba(0,0,0,.12));
+      border-color: rgba(239,68,68,.90);
+      background: linear-gradient(135deg, rgba(239,68,68,.26), rgba(0,0,0,.12));
     }
 
+    /* Question blocks are NON-clickable info containers -> red glass */
     .q{
       margin:12px 0;
       padding:12px;
       border-radius:16px;
       border:1px solid var(--redLine);
-      background: linear-gradient(135deg, var(--redGlassA), rgba(0,0,0,.10));
+      background: linear-gradient(135deg, var(--redA), rgba(0,0,0,.10));
       backdrop-filter: blur(14px);
-      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset, 0 16px 28px rgba(0,0,0,.20);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset, 0 18px 34px rgba(0,0,0,.22);
     }
-    .q h4{margin:0 0 8px; font-size:14px; color:#ffe9e9}
-    .small{font-size:12px; color:rgba(255,235,235,.85); line-height:1.35}
+    .q h4{
+      margin:0 0 8px;
+      font-size:14px;
+      color:#ffe9e9;
+      font-family:"Special Elite", system-ui, sans-serif;
+      letter-spacing:.6px;
+    }
+    .small{font-size:12px; color:rgba(255,235,235,.88); line-height:1.35}
     .choices{display:grid; gap:8px; margin-top:10px}
     .choice{display:flex; gap:10px; align-items:flex-start}
     .choice input{margin-top:3px}
@@ -342,12 +361,13 @@
       width:100%;
       padding:12px 14px;
       border-radius:16px;
-      border:1px solid rgba(191,219,254,.35);
-      background: linear-gradient(135deg, rgba(59,130,246,.16), rgba(0,0,0,.18));
+      border:1px solid rgba(219,234,254,.38);
+      background: linear-gradient(135deg, rgba(59,130,246,.18), rgba(0,0,0,.22));
       color:var(--ink);
       outline:none;
       backdrop-filter: blur(12px);
-      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset, 0 12px 24px rgba(0,0,0,.18);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset, 0 14px 26px rgba(0,0,0,.20);
+      font-family: inherit;
     }
     textarea{min-height:120px; resize:vertical}
 
@@ -355,9 +375,9 @@
       margin-top:10px;
       padding:12px 14px;
       border-radius:16px;
-      border:1px dashed rgba(245,158,11,.65);
-      background: linear-gradient(135deg, rgba(245,158,11,.20), rgba(0,0,0,.12));
-      color:#fff1d6;
+      border:1px dashed rgba(245,158,11,.72);
+      background: linear-gradient(135deg, rgba(245,158,11,.22), rgba(0,0,0,.12));
+      color:#fff2da;
       backdrop-filter: blur(12px);
       display:none;
     }
@@ -369,22 +389,23 @@
       align-items:start;
     }
     @media (max-width: 950px){ .finalBox{grid-template-columns:1fr} }
+
     .code{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-family: inherit;
       font-size:20px;
       letter-spacing:1px;
       padding:12px 14px;
       border-radius:16px;
-      border:1px solid rgba(191,219,254,.80);
-      background: linear-gradient(135deg, rgba(59,130,246,.30), rgba(167,139,250,.16));
-      box-shadow: 0 0 24px rgba(59,130,246,.25);
+      border:1px solid rgba(219,234,254,.85);
+      background: linear-gradient(135deg, rgba(59,130,246,.36), rgba(167,139,250,.18));
+      box-shadow: 0 0 26px rgba(59,130,246,.28);
       backdrop-filter: blur(14px);
     }
 
     .imgWrap{
       border-radius:18px;
       overflow:hidden;
-      border:1px solid rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.16);
       background: rgba(0,0,0,.22);
       backdrop-filter: blur(10px);
       box-shadow: var(--shadowSoft);
@@ -402,11 +423,11 @@
       <div style="min-width:280px">
         <h1>Civil Rights Escape Room</h1>
         <div class="sub">
-          Move room to room along the pathway. Complete each stage to unlock the next. When all locks are opened, you’ll receive an Escape Code.
+          Follow the pathway from room to room. Complete each stage to unlock the next. When all locks are opened, you’ll receive an Escape Code.
         </div>
-        <div class="crumbs" style="margin-top:10px">
-          <span class="crumb">Pathway: <strong id="crumbRoom">Room 1</strong></span>
-          <span class="glassRed" id="lockPill">Locks Opened: 0 / 6</span>
+        <div class="crumbs">
+          <span class="crumb">Location: <strong id="crumbRoom">Room 1</strong></span>
+          <span class="glassRedPill" id="lockPill">Locks Opened: 0 / 6</span>
         </div>
       </div>
 
@@ -421,33 +442,30 @@
 
 <main>
   <div class="wrap grid">
-    <!-- Left: pathway stage list -->
     <section class="panel">
       <h2>Pathway Rooms</h2>
       <div class="content">
-        <p class="pathTitle">Follow the corridor. Each lock opens the next door.</p>
+        <p class="pathTitle">Each lock opens the next door.</p>
         <div class="stages" id="stageList"></div>
-
         <div class="actions" style="margin-top:14px;">
           <button id="resetAll">Reset Escape Room</button>
         </div>
-
         <div class="status" style="margin-top:12px;">
-          <b>Teacher tip:</b> All question content is editable in the arrays inside <code>index.html</code>.
+          <b>Teacher tip:</b> Edit question content inside <code>index.html</code> (arrays near the top of the script).
         </div>
       </div>
     </section>
 
-    <!-- Right: stage content -->
     <section class="card" id="stageArea"></section>
   </div>
 </main>
 
 <script>
 /** =========================================================
- *  TEACHER-EDITABLE CONTENT (stages kept intact)
+ *  TEACHER-EDITABLE CONTENT (stages intact)
  *  ========================================================= */
 
+// Stage 1 pool: random-picks 10 each playthrough
 const VOCAB = [
   {t:"I Have a Dream Speech", d:"A speech given by Martin Luther King, Jr. at the 1963 March on Washington at the Lincoln Memorial."},
   {t:"Civil Rights Movement", d:"Mass movement in the 1950s–1960s aimed at ending segregation and securing equal rights for African Americans."},
@@ -495,12 +513,18 @@ const VOCAB = [
 ];
 
 const COURT_SCENARIOS = [
-  { id:"brown", case:"Brown v. Board of Education", prompt:"A public school district assigns students to schools by race. What does Brown v. Board say?", choices:["This is constitutional if 'separate but equal' is provided.","This is unconstitutional; segregated public schools violate equal protection.","Only private schools are affected."], answer:1 },
-  { id:"mapp", case:"Mapp v. Ohio", prompt:"Police search a home without a valid warrant and find evidence. What’s the key rule from Mapp?", choices:["Evidence is always allowed if it proves guilt.","Illegally obtained evidence must be excluded from state trials (exclusionary rule).","Only federal cases must exclude evidence."], answer:1 },
-  { id:"hernandez", case:"Hernandez v. Texas", prompt:"Mexican Americans are systematically excluded from juries in a county. Hernandez v. Texas says…", choices:["Only Black/White discrimination counts under equal protection.","Equal protection applies beyond Black/White categories; excluding Mexican Americans violates the Constitution.","States can choose juries any way they want."], answer:1 },
-  { id:"miranda", case:"Miranda v. Arizona", prompt:"A suspect is questioned in custody and not told they can remain silent or get a lawyer. Miranda requires…", choices:["Nothing; warnings are optional.","Police must advise suspects of rights before custodial interrogation.","Only judges must explain rights."], answer:1 },
-  { id:"escobedo", case:"Escobedo v. Illinois", prompt:"A suspect asks for a lawyer during police questioning and is denied. Escobedo supports…", choices:["Right to counsel during police interrogation under certain circumstances.","No right to counsel until trial.","Police can deny counsel if they’re 'busy'."], answer:0 },
-  { id:"yoder", case:"Wisconsin v. Yoder", prompt:"A state requires students to attend school past 8th grade, but an Amish family objects for religious reasons. Yoder says…", choices:["Religious freedom can outweigh compulsory education laws in specific cases.","Religious beliefs never matter in schooling laws.","Only private schooling is allowed."], answer:0 },
+  { case:"Brown v. Board of Education", prompt:"A public school district assigns students to schools by race. What does Brown v. Board say?",
+    choices:["This is constitutional if 'separate but equal' is provided.","This is unconstitutional; segregated public schools violate equal protection.","Only private schools are affected."], answer:1 },
+  { case:"Mapp v. Ohio", prompt:"Police search a home without a valid warrant and find evidence. What’s the key rule from Mapp?",
+    choices:["Evidence is always allowed if it proves guilt.","Illegally obtained evidence must be excluded from state trials (exclusionary rule).","Only federal cases must exclude evidence."], answer:1 },
+  { case:"Hernandez v. Texas", prompt:"Mexican Americans are systematically excluded from juries in a county. Hernandez v. Texas says…",
+    choices:["Only Black/White discrimination counts under equal protection.","Equal protection applies beyond Black/White categories; excluding Mexican Americans violates the Constitution.","States can choose juries any way they want."], answer:1 },
+  { case:"Miranda v. Arizona", prompt:"A suspect is questioned in custody and not told they can remain silent or get a lawyer. Miranda requires…",
+    choices:["Nothing; warnings are optional.","Police must advise suspects of rights before custodial interrogation.","Only judges must explain rights."], answer:1 },
+  { case:"Escobedo v. Illinois", prompt:"A suspect asks for a lawyer during police questioning and is denied. Escobedo supports…",
+    choices:["Right to counsel during police interrogation under certain circumstances.","No right to counsel until trial.","Police can deny counsel if they’re 'busy'."], answer:0 },
+  { case:"Wisconsin v. Yoder", prompt:"A state requires students to attend school past 8th grade, but an Amish family objects for religious reasons. Yoder says…",
+    choices:["Religious freedom can outweigh compulsory education laws in specific cases.","Religious beliefs never matter in schooling laws.","Only private schooling is allowed."], answer:0 },
 ];
 
 const RESISTORS = [
@@ -535,7 +559,7 @@ const ESCAPE_CODES = [
 ];
 
 /** =========================================================
- *  GAME ENGINE
+ *  ENGINE
  *  ========================================================= */
 const STAGES = [
   { id:1, title:"Room 1: Vocab Lock", desc:"Match 10 terms to their definitions.", render:renderStage1 },
@@ -567,17 +591,13 @@ function shuffle(arr){
   }
   return a;
 }
-function pickRandom(arr, n){
-  return shuffle(arr).slice(0, n);
-}
+function pickRandom(arr, n){ return shuffle(arr).slice(0, n); }
 
 function updateUI(){
   const open = Object.values(state.unlocked).filter(Boolean).length;
   lockPill.textContent = `Locks Opened: ${open} / 6`;
   bar.style.width = `${Math.round((open/6)*100)}%`;
-
-  const roomLabel = (state.activeStage <= 6) ? `Room ${state.activeStage}` : "Exit Door";
-  crumbRoom.textContent = roomLabel;
+  crumbRoom.textContent = (state.activeStage <= 6) ? `Room ${state.activeStage}` : "Exit Door";
 
   stageList.innerHTML = "";
   for(const s of STAGES){
@@ -613,7 +633,6 @@ function updateUI(){
 function renderActiveStage(withTransition=false){
   if(withTransition){
     stageArea.classList.remove("roomFade");
-    // reflow
     void stageArea.offsetWidth;
     stageArea.classList.add("roomFade");
   }
@@ -622,11 +641,8 @@ function renderActiveStage(withTransition=false){
 }
 
 function unlockStage(id){
-  if(id >=1 && id <=6){
-    state.unlocked[id] = true;
-  }
-  if(id < 6) state.activeStage = id+1;
-  else state.activeStage = 7;
+  if(id >=1 && id <=6) state.unlocked[id] = true;
+  state.activeStage = (id < 6) ? id+1 : 7;
   updateUI();
   renderActiveStage(true);
 }
@@ -638,9 +654,9 @@ $("#resetAll").addEventListener("click", () => {
   renderActiveStage(true);
 });
 
-/** =========================================================
- *  STAGE 1: Vocab matching (10)
- *  ========================================================= */
+/** =========================
+ * STAGE 1: vocab matching
+ * ========================= */
 function renderStage1(){
   const set = pickRandom(VOCAB, 10);
   const terms = shuffle(set.map(x => x.t));
@@ -653,7 +669,7 @@ function renderStage1(){
   stageArea.innerHTML = `
     <div class="roomBanner">
       <h3>Room 1: Vocab Lock</h3>
-      <p>Click a <b>term</b>, then click its matching <b>definition</b>. Get all 10 correct to open the door to Room 2.</p>
+      <p>Click a <b>term</b>, then click its matching <b>definition</b>. Get all 10 correct to open the door.</p>
     </div>
 
     <div class="twoCol">
@@ -767,13 +783,12 @@ function renderStage1(){
 
   $("#s1Reset").addEventListener("click", () => renderStage1());
   $("#s1Check").addEventListener("click", () => unlockStage(1));
-
   refresh();
 }
 
-/** =========================================================
- *  STAGE 2: SCLC vs Panthers short response
- *  ========================================================= */
+/** =========================
+ * STAGE 2: short response
+ * ========================= */
 function renderStage2(){
   stageArea.innerHTML = `
     <div class="roomBanner">
@@ -792,16 +807,18 @@ function renderStage2(){
       A strong answer includes: <b>nonviolent protest</b> / <b>civil disobedience</b> for SCLC and <b>self-defense</b> / <b>militant</b> / <b>community programs</b> for the Panthers.
     </div>
 
-    <div class="status" id="s2Status">Tip: Use at least two contrasting ideas (methods + goals/approach).</div>
+    <div class="status" id="s2Status">Tip: Clearly describe BOTH groups and contrast their approaches.</div>
   `;
 
   $("#s2HintBtn").addEventListener("click", () => $("#s2Hint").classList.toggle("show"));
 
   $("#s2Check").addEventListener("click", () => {
     const text = ($("#s2Text").value || "").toLowerCase();
+
     const hasSCLC = /(sclc|king|nonviolent|civil disobedience|march|boycott|sit-in|peaceful)/.test(text);
     const hasPanthers = /(panther|black power|self[- ]defen|armed|militant|community|free breakfast|patrol)/.test(text);
     const hasContrast = /(whereas|while|but|different|contrast)/.test(text) || (hasSCLC && hasPanthers);
+
     const ok = hasSCLC && hasPanthers && hasContrast && text.replace(/\s/g,"").length >= 40;
 
     const box = $("#s2Status");
@@ -816,16 +833,14 @@ function renderStage2(){
   });
 }
 
-/** =========================================================
- *  STAGE 3: Court case scenario quiz
- *  ========================================================= */
+/** =========================
+ * STAGE 3: court case quiz
+ * ========================= */
 function renderStage3(){
-  const items = COURT_SCENARIOS;
-
   stageArea.innerHTML = `
     <div class="roomBanner">
       <h3>Room 3: Court Case Lock</h3>
-      <p>Apply the outcomes of court cases to each scenario. You must get <b>all</b> correct to open the next door.</p>
+      <p>Apply the outcome of each court case to the scenario. You must get <b>all</b> correct.</p>
     </div>
 
     <div id="s3"></div>
@@ -834,12 +849,13 @@ function renderStage3(){
       <button id="s3HintBtn">Show Hint</button>
       <button class="primary" id="s3Check">Open Door to Room 4</button>
     </div>
+
     <div class="hint" id="s3Hint">Hint: Think “schools,” “evidence,” “jury discrimination,” and “rights during questioning.”</div>
     <div class="status" id="s3Status">Complete all questions, then check.</div>
   `;
 
   const container = $("#s3");
-  items.forEach((q, idx) => {
+  COURT_SCENARIOS.forEach((q, idx) => {
     const div = document.createElement("div");
     div.className = "q";
     div.innerHTML = `
@@ -860,13 +876,13 @@ function renderStage3(){
   $("#s3HintBtn").addEventListener("click", () => $("#s3Hint").classList.toggle("show"));
 
   $("#s3Check").addEventListener("click", () => {
-    const answers = items.map((q, idx) => {
-      const chosen = document.querySelector(\`input[name="q\${idx}"]:checked\`);
+    const answers = COURT_SCENARIOS.map((q, idx) => {
+      const chosen = document.querySelector(`input[name="q${idx}"]:checked`);
       return chosen ? Number(chosen.value) : null;
     });
 
     const allAnswered = answers.every(a => a !== null);
-    const correct = answers.every((a, idx) => a === items[idx].answer);
+    const correct = answers.every((a, idx) => a === COURT_SCENARIOS[idx].answer);
 
     const box = $("#s3Status");
     if(!allAnswered){
@@ -885,9 +901,9 @@ function renderStage3(){
   });
 }
 
-/** =========================================================
- *  STAGE 4: Resistors matching
- *  ========================================================= */
+/** =========================
+ * STAGE 4: resistors matching
+ * ========================= */
 function renderStage4(){
   const left = shuffle(RESISTORS.map(x=>x.who));
   const right = shuffle(RESISTORS.map(x=>x.did));
@@ -898,7 +914,7 @@ function renderStage4(){
   stageArea.innerHTML = `
     <div class="roomBanner">
       <h3>Room 4: Resistance Lock</h3>
-      <p>Match each resistor to the correct description of how they resisted the Civil Rights Movement.</p>
+      <p>Match each resistor to how they resisted the Civil Rights Movement.</p>
     </div>
 
     <div class="twoCol">
@@ -932,7 +948,7 @@ function renderStage4(){
     } else {
       unlock.disabled=true;
       status.classList.remove("good","bad");
-      status.textContent=\`Matches: \${matched.size} / \${RESISTORS.length}\`;
+      status.textContent=`Matches: ${matched.size} / ${RESISTORS.length}`;
     }
   }
   function clearSel(){
@@ -986,26 +1002,28 @@ function renderStage4(){
   refresh();
 }
 
-/** =========================================================
- *  STAGE 5: Leaders & roles (multiple choice)
- *  ========================================================= */
+/** =========================
+ * STAGE 5: leaders roles
+ * ========================= */
 function renderStage5(){
   const qs = shuffle(LEADERS).map((x) => {
     const distractors = shuffle(LEADERS.filter(y=>y.who!==x.who).map(y=>y.role)).slice(0,2);
     const choices = shuffle([x.role, ...distractors]);
-    return { who:x.who, prompt:`Which description matches <b>${x.who}</b>?`, choices, answer: choices.indexOf(x.role) };
+    return { prompt:`Which description matches <b>${x.who}</b>?`, choices, answer: choices.indexOf(x.role) };
   });
 
   stageArea.innerHTML = `
     <div class="roomBanner">
       <h3>Room 5: Leaders Lock</h3>
-      <p>Identify the roles of major Civil Rights leaders. All must be correct to proceed.</p>
+      <p>Identify the roles of major Civil Rights leaders. All must be correct.</p>
     </div>
 
     <div id="s5"></div>
+
     <div class="actions">
       <button class="primary" id="s5Check">Open Door to Room 6</button>
     </div>
+
     <div class="status" id="s5Status">Complete all questions, then check.</div>
   `;
 
@@ -1041,9 +1059,9 @@ function renderStage5(){
   });
 }
 
-/** =========================================================
- *  STAGE 6: Great Society impacts
- *  ========================================================= */
+/** =========================
+ * STAGE 6: Great Society
+ * ========================= */
 function renderStage6(){
   stageArea.innerHTML = `
     <div class="roomBanner">
@@ -1094,9 +1112,9 @@ function renderStage6(){
   });
 }
 
-/** =========================================================
- *  FINAL: Escape code + embedded image shown as background already
- *  ========================================================= */
+/** =========================
+ * FINAL
+ * ========================= */
 function renderFinal(){
   const code = ESCAPE_CODES[Math.floor(Math.random()*ESCAPE_CODES.length)];
   stageArea.innerHTML = `
@@ -1107,26 +1125,24 @@ function renderFinal(){
 
     <div class="finalBox">
       <div>
-        <div class="code" id="finalCode">${code}</div>
-        <div class="status good" style="margin-top:12px;">
-          Great work. Your team successfully completed the Civil Rights Escape Room.
-        </div>
+        <div class="code">${code}</div>
+        <div class="status good" style="margin-top:12px;">Great work. Your team successfully completed the Civil Rights Escape Room.</div>
         <div class="actions">
           <button class="primary" id="copyCode">Copy Escape Code</button>
         </div>
         <div class="status" style="margin-top:10px;">
-          Teacher note: The escape code randomizes each refresh, but always stays Civil Rights–themed.
+          Teacher note: The code randomizes each refresh, but always stays Civil Rights–themed.
         </div>
       </div>
 
       <div class="imgWrap">
         <img src="civil-rights-leaders.png" alt="Civil Rights Leaders"
-             onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:12px;color:rgba(255,235,235,.85)&quot;><b>Image not found.</b><br/>Upload the image as <code>civil-rights-leaders.png</code> in the repo root.</div>';">
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:12px;color:rgba(255,235,235,.88)&quot;><b>Image not found.</b><br/>Upload the image as <code>civil-rights-leaders.png</code> in the repo root.</div>';">
       </div>
     </div>
   `;
 
-  $("#copyCode").addEventListener("click", async ()=>{
+  document.querySelector("#copyCode").addEventListener("click", async ()=>{
     try{
       await navigator.clipboard.writeText(code);
       alert("Copied!");
@@ -1136,9 +1152,7 @@ function renderFinal(){
   });
 }
 
-/** =========================================================
- *  INIT
- *  ========================================================= */
+/** INIT */
 updateUI();
 renderActiveStage(true);
 </script>
