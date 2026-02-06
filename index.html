@@ -1025,8 +1025,8 @@ function render(){
    ROOM 1: Timeline Forge
 ========================= */
 function renderRoom1(){
-  const events = JSON.parse(localStorage.getItem("cr_r1_events") || "null") || shuffle(TIMELINE_EVENTS);
-  localStorage.setItem("cr_r1_events", JSON.stringify(events));
+  const events = JSON.parse(localStorage.getItem("cr_r1_events_v2") || "null") || shuffle(TIMELINE_EVENTS);
+  localStorage.setItem("cr_r1_events_v2", JSON.stringify(events));
 
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
@@ -1074,7 +1074,7 @@ function renderRoom1(){
         if(act==="down" && i<events.length-1){
           [events[i+1],events[i]] = [events[i],events[i+1]];
         }
-        localStorage.setItem("cr_r1_events", JSON.stringify(events));
+        localStorage.setItem("cr_r1_events_v2", JSON.stringify(events));
         paint();
       });
     });
@@ -1083,7 +1083,7 @@ function renderRoom1(){
 
   $("#shuffleR1").addEventListener("click", () => {
     const sh = shuffle(TIMELINE_EVENTS);
-    localStorage.setItem("cr_r1_events", JSON.stringify(sh));
+    localStorage.setItem("cr_r1_events_v2", JSON.stringify(sh));
     animateStage(); renderRoom1();
   });
 
@@ -1831,7 +1831,7 @@ $("#modeBtn").addEventListener("click", () => {
 
 $("#resetBtn").addEventListener("click", () => {
   if(confirm("Reset the entire escape room progress?")){
-    localStorage.removeItem("cr_r1_events");
+    localStorage.removeItem("cr_r1_events_v2");
     localStorage.removeItem("cr_r2_text");
     localStorage.removeItem("cr_r2_chips");
     localStorage.removeItem("cr_h1");
