@@ -1396,7 +1396,8 @@ function renderStage3(){
       const imp = $(`#impact_${d.id}`).value;
       if(c && imp) answered++;
 
-      if(c === d.correctCase && imp === d.correctImpact) correct++;
+      const impactCase = impactToCase.get(imp);
+if(c === d.correctCase && impactCase === d.correctCase) correct++;
     });
 
     const box = $("#s3Status");
