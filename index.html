@@ -147,7 +147,7 @@
       background: linear-gradient(135deg, var(--redA), rgba(0,0,0,.14));
       border-bottom:1px solid rgba(255,255,255,.16);
       color:#ffe3e3;
-      font-family:"Special Elite", system-ui, sans-serif;
+      font-family:"Special+Elite", system-ui, sans-serif;
     }
     .panel .content{padding:12px 14px}
 
@@ -474,12 +474,13 @@
     <div class="row">
       <div style="min-width:300px">
         <h1>Civil Rights Escape Room — STAAR TEKS Boss Mode</h1>
-        <div class="sub">
+        <div class="sub" id="subtitle">
           Less quiz. More missions. Every lock is a different kind of challenge. Complete all 7 locks to escape.
         </div>
         <div class="crumbs">
           <span class="crumb">Location: <strong id="crumbRoom">Room 1</strong></span>
           <span class="glassRedPill" id="lockPill">Locks Opened: 0 / 7</span>
+          <span class="crumb">Mode: <strong id="modeLabel">Standard</strong></span>
         </div>
       </div>
 
@@ -505,6 +506,7 @@
 
         <div class="actions" style="margin-top:14px;">
           <button id="resetAll">Reset Escape Room</button>
+          <button id="toggleMode" class="primary">Toggle Mode (Standard / Honors)</button>
         </div>
 
         <div class="status" style="margin-top:12px;">
@@ -527,70 +529,223 @@
 
 <script>
 /* =========================================================
+   DIFFICULTY MODE
+   - "standard" = STAAR EOC-friendly language + scaffolds
+   - "honors"   = tougher vocabulary + tighter thresholds
+   ========================================================= */
+let DIFFICULTY = "standard"; // change default here if you want: "standard" or "honors"
+
+/* =========================================================
    TEKS TARGETS (US History 113.41 Civil Rights + Great Society)
    =========================================================
    Civil Rights: 113.41(9)(A–J)
    Great Society / economic opportunity: 113.41(17)(D)
 */
+const TEKS = [
+  { k:"9A",  txt:"(9)(A) civil rights development; 13th/14th/15th/19th" },
+  { k:"9B",  txt:"(9)(B) Jim Crow + KKK obstacles; voter suppression" },
+  { k:"9C",  txt:"(9)(C) political orgs (AA/Chicano/American Indian/Women)" },
+  { k:"9D",  txt:"(9)(D) leaders: MLK, Chávez, Huerta, Parks, Friedan" },
+  { k:"9E",  txt:"(9)(E) Black Panthers vs MLK nonviolent approach" },
+  { k:"9F",  txt:"(9)(F) MLK writings impact (Dream + Birmingham letter)" },
+  { k:"9G",  txt:"(9)(G) presidential actions + congressional votes (CRA 1964, VRA 1965)" },
+  { k:"9H",  txt:"(9)(H) Wallace/Faubus/Southern Democrats status quo" },
+  { k:"9I",  txt:"(9)(I) changes from movement; political participation" },
+  { k:"9J",  txt:"(9)(J) Sweatt v Painter + Brown protect minority rights" },
+  { k:"17D", txt:"(17)(D) Great Society, affirmative action, Title IX outcomes" },
+];
 
 const ESCAPE_CODES = [
   "DREAM-1963","VOTE-1965","EQUAL-14TH","FREEDOM-RIDES","CIVILRIGHTS-1964","JUSTICE-BROWN54","NONVIOLENCE-SCLC",
   "SWEATT-TX","TITLEIX-1972","FAIRHOUSING-1968"
 ];
 
-const TIMELINE_EVENTS = [
-  { id:"pl", label:"Plessy v. Ferguson entrenches 'separate but equal' (sets stage for later legal challenges)." },
-  { id:"na", label:"NAACP founded (legal strategy + organizing against segregation)." },
-  { id:"bo", label:"Brown v. Board rules segregated public schools unconstitutional (major turning point)." },
-  { id:"mo", label:"Montgomery Bus Boycott (mass action + nonviolent resistance gains power)." },
-  { id:"sw", label:"Sweatt v. Painter begins Texas challenge to segregated education (pipeline to Brown)." },
-  { id:"lr", label:"Little Rock Crisis (federal enforcement of desegregation meets state resistance)." },
-  { id:"cr", label:"Civil Rights Act bans segregation/discrimination in major areas of public life." },
+const $ = (sel) => document.querySelector(sel);
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+function pickRandom(arr, n){ return shuffle(arr).slice(0, n); }
+function escapeHTML(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* =========================================================
+   CONTENT BANKS (STANDARD vs HONORS)
+   ========================================================= */
+function getThresholds(){
+  // Room 2 writing requirements and other checks
+  return (DIFFICULTY === "honors")
+    ? { r2ReasonMin: 140, r2MLKMin: 20, r4SummaryMin: 190 }
+    : { r2ReasonMin: 90,  r2MLKMin: 12, r4SummaryMin: 110 };
+}
+
+/* ---- ROOM 1 TIMELINE EVENTS ---- */
+const TIMELINE_EVENTS_STANDARD = [
+  { id:"pl", year:1896, label:"1896 — Plessy v. Ferguson: makes segregation legal (“separate but equal”)." },
+  { id:"na", year:1909, label:"1909 — NAACP founded: uses courts and organizing to fight segregation." },
+  { id:"sw", year:1946, label:"1946 — Sweatt v. Painter starts Texas challenge to segregated education (helps lead to Brown)." },
+  { id:"bo", year:1954, label:"1954 — Brown v. Board: segregated public schools are unconstitutional." },
+  { id:"mo", year:1955, label:"1955–56 — Montgomery Bus Boycott: mass protest + nonviolent resistance." },
+  { id:"lr", year:1957, label:"1957 — Little Rock Crisis: federal government enforces desegregation against state resistance." },
+  { id:"cr", year:1964, label:"1964 — Civil Rights Act: bans segregation/discrimination in many public places and jobs." },
+  { id:"vr", year:1965, label:"1965 — Voting Rights Act: targets barriers like literacy tests; strengthens enforcement." },
+  { id:"fh", year:1968, label:"1968 — Fair Housing Act: limits housing discrimination (long-term effects on neighborhoods)." },
 ];
 
+const TIMELINE_EVENTS_HONORS = [
+  { id:"pl", year:1896, label:"1896 — Plessy v. Ferguson entrenches 'separate but equal' (legal foundation for segregation)." },
+  { id:"na", year:1909, label:"1909 — NAACP founded (litigation + organizing against segregation)." },
+  { id:"sw", year:1946, label:"1946 — Sweatt v. Painter begins Texas challenge to segregated education (pipeline to Brown)." },
+  { id:"bo", year:1954, label:"1954 — Brown v. Board rules segregated public schools unconstitutional (major turning point)." },
+  { id:"mo", year:1955, label:"1955–56 — Montgomery Bus Boycott (mass action + nonviolent resistance gains power)." },
+  { id:"lr", year:1957, label:"1957 — Little Rock Crisis (federal enforcement meets state resistance)." },
+  { id:"cr", year:1964, label:"1964 — Civil Rights Act outlaws discrimination/segregation in major areas of public life." },
+  { id:"vr", year:1965, label:"1965 — Voting Rights Act targets barriers and expands federal oversight." },
+  { id:"fh", year:1968, label:"1968 — Fair Housing Act (long-term: reshapes housing access and debates)." },
+];
+
+/* ---- ROOM 3 COURT CONTENT ---- */
 const COURT_CASES = [
-  { key:"Brown v. Board", impacts:[
+  { key:"Brown v. Board", impactsStandard:[
+      "Long-term: segregation in schools becomes harder to defend; inspires more civil rights cases.",
+      "Long-term: changes how Americans think about equality in public life."
+    ],
+    impactsHonors:[
       "Accelerated desegregation fights; inspired further court challenges and federal enforcement.",
       "Helped delegitimize 'separate but equal' and reshaped civil rights strategy nationwide."
     ]
   },
-  { key:"Sweatt v. Painter", impacts:[
+  { key:"Sweatt v. Painter", impactsStandard:[
+      "Long-term: shows that 'separate' can still be unfair; helps lead to Brown.",
+      "Long-term: strengthens court challenges against segregation in education."
+    ],
+    impactsHonors:[
       "Undermined 'separate but equal' by highlighting intangible inequalities; paved the way to Brown.",
       "Strengthened litigation strategy in civil rights cases, especially in education."
     ]
   },
-  { key:"Hernandez v. Texas", impacts:[
+  { key:"Hernandez v. Texas", impactsStandard:[
+      "Long-term: expands equal protection to groups beyond Black/White categories.",
+      "Long-term: helps fights against unfair jury selection and discrimination."
+    ],
+    impactsHonors:[
       "Expanded equal protection beyond a Black/White framework; impacted jury fairness claims.",
       "Supported later civil rights claims for other groups facing systemic exclusion."
     ]
   },
-  { key:"Mapp v. Ohio", impacts:[
+  { key:"Mapp v. Ohio", impactsStandard:[
+      "Long-term: police need proper warrants; illegal evidence can be thrown out.",
+      "Long-term: changes police training and court rules about searches."
+    ],
+    impactsHonors:[
       "Made the exclusionary rule apply to states; reshaped police procedure and evidence rules.",
       "Long-term: drove training, warrants, and rights-based policing debates."
     ]
   },
-  { key:"Miranda v. Arizona", impacts:[
+  { key:"Miranda v. Arizona", impactsStandard:[
+      "Long-term: people must be told rights when arrested and questioned.",
+      "Long-term: changes how police do interviews and protects against forced confessions."
+    ],
+    impactsHonors:[
       "Standardized custodial rights warnings; changed interrogation practices nationwide.",
       "Long-term: strengthened right-to-counsel norms and public awareness of rights."
     ]
   },
-  { key:"Escobedo v. Illinois", impacts:[
+  { key:"Escobedo v. Illinois", impactsStandard:[
+      "Long-term: supports the idea that suspects should access a lawyer during questioning.",
+      "Long-term: helps lead toward clearer protections like Miranda warnings."
+    ],
+    impactsHonors:[
       "Expanded access to counsel during police questioning in key circumstances; influenced Miranda.",
       "Long-term: pushed courts toward clearer safeguards against coerced confessions."
     ]
   },
-  { key:"Wisconsin v. Yoder", impacts:[
+  { key:"Wisconsin v. Yoder", impactsStandard:[
+      "Long-term: protects religious freedom when it strongly conflicts with certain state rules.",
+      "Long-term: used later when courts balance individual rights vs government goals."
+    ],
+    impactsHonors:[
       "Strengthened protections for religious liberty against some state requirements.",
       "Long-term: used in later debates balancing individual rights and public policy."
     ]
   }
 ];
 
-const COURT_DOSSIERS = [
+const COURT_DOSSIERS_STANDARD = [
+  {
+    id:"d1",
+    dossier:
+`A school district redraws zones and claims it is “just about buses.” But the plan makes one school mostly one race and the other school mostly another. Families show that resources will likely be unequal over time. The judge must decide if this violates equal protection.`,
+    think:"Think about: schools + equal treatment",
+    correctCase:"Brown v. Board",
+    correctImpact:"Long-term: segregation in schools becomes harder to defend; inspires more civil rights cases."
+  },
+  {
+    id:"d2",
+    dossier:
+`A state creates a separate law school program for minority students only after getting sued. The building is fine, but students do not get the same famous professors, networking, or job connections. The question is whether “separate” can still be unfair even if the buildings look similar.`,
+    think:"Think about: education + fairness beyond buildings",
+    correctCase:"Sweatt v. Painter",
+    correctImpact:"Long-term: shows that 'separate' can still be unfair; helps lead to Brown."
+  },
+  {
+    id:"d3",
+    dossier:
+`In a county, Mexican American citizens almost never end up on juries, even though they live there in large numbers. Officials claim discrimination rules only apply to Black and White citizens. Lawyers argue that excluding a group from juries is unfair and violates equal protection.`,
+    think:"Think about: jury selection + discrimination",
+    correctCase:"Hernandez v. Texas",
+    correctImpact:"Long-term: expands equal protection to groups beyond Black/White categories."
+  },
+  {
+    id:"d4",
+    dossier:
+`Police break into a home based on a tip and take evidence without a valid warrant. The prosecutor says the evidence is real, so it should still be used. The court must decide if states can use evidence taken during an illegal search.`,
+    think:"Think about: searches + warrants + evidence",
+    correctCase:"Mapp v. Ohio",
+    correctImpact:"Long-term: police need proper warrants; illegal evidence can be thrown out."
+  },
+  {
+    id:"d5",
+    dossier:
+`A teen is questioned at a police station for hours and is told “just talk and this will be easier.” The teen is not told the right to remain silent or the right to a lawyer. The confession becomes the main evidence. The court must decide if warnings are required.`,
+    think:"Think about: questioning + rights warning",
+    correctCase:"Miranda v. Arizona",
+    correctImpact:"Long-term: people must be told rights when arrested and questioned."
+  },
+  {
+    id:"d6",
+    dossier:
+`A suspect asks to speak with a lawyer, but police keep questioning anyway. Officers pressure the suspect by claiming they have strong evidence. The suspect finally confesses. The court must decide whether denying access to a lawyer made the process unfair.`,
+    think:"Think about: access to lawyer during questioning",
+    correctCase:"Escobedo v. Illinois",
+    correctImpact:"Long-term: supports the idea that suspects should access a lawyer during questioning."
+  },
+  {
+    id:"d7",
+    dossier:
+`A religious community educates children through eighth grade, then trains them through family and community work programs. The state requires school attendance until age 16. The family argues the law strongly conflicts with their religious practice. The court must balance religious freedom and state rules.`,
+    think:"Think about: religion vs state law",
+    correctCase:"Wisconsin v. Yoder",
+    correctImpact:"Long-term: protects religious freedom when it strongly conflicts with certain state rules."
+  }
+];
+
+const COURT_DOSSIERS_HONORS = [
   {
     id:"d1",
     dossier:
 `A state education agency redraws attendance zones so a “new” campus is nearly all one race, while claiming it is about bus routes and capacity. Families present data showing the plan predictably recreates separation and unequal resources over time. A federal judge must decide whether the policy violates equal protection even without openly racist language.`,
+    think:"Hint: education + equality",
     correctCase:"Brown v. Board",
     correctImpact:"Helped delegitimize 'separate but equal' and reshaped civil rights strategy nationwide."
   },
@@ -598,6 +753,7 @@ const COURT_DOSSIERS = [
     id:"d2",
     dossier:
 `A professional school offers an in-state option for minority students only after being sued—yet the “separate” option lacks alumni networks, faculty prestige, and career placement connections. The state argues the buildings and books are comparable. The dispute focuses on the intangible advantages that affect future opportunity and status.`,
+    think:"Hint: intangibles in education",
     correctCase:"Sweatt v. Painter",
     correctImpact:"Undermined 'separate but equal' by highlighting intangible inequalities; paved the way to Brown."
   },
@@ -605,6 +761,7 @@ const COURT_DOSSIERS = [
     id:"d3",
     dossier:
 `A county’s jury lists rarely include Mexican American citizens even though they are a substantial part of the population. Officials insist discrimination law only applies to a Black/White split. Defense attorneys argue that excluding a recognizable class undermines equal protection and fair trials.`,
+    think:"Hint: jury exclusion",
     correctCase:"Hernandez v. Texas",
     correctImpact:"Expanded equal protection beyond a Black/White framework; impacted jury fairness claims."
   },
@@ -612,6 +769,7 @@ const COURT_DOSSIERS = [
     id:"d4",
     dossier:
 `Police force entry into an apartment after receiving an anonymous tip and seize evidence without a valid warrant. Prosecutors argue the evidence is reliable and the search was “reasonable” because the suspect seemed suspicious. The court must decide whether states can use evidence obtained through unconstitutional searches.`,
+    think:"Hint: illegal search evidence",
     correctCase:"Mapp v. Ohio",
     correctImpact:"Made the exclusionary rule apply to states; reshaped police procedure and evidence rules."
   },
@@ -619,6 +777,7 @@ const COURT_DOSSIERS = [
     id:"d5",
     dossier:
 `A teenager is questioned for hours at a station after being told “cooperation will help you.” No formal charges are filed yet, and the teen is not told about the right to remain silent or to an attorney. The confession becomes the main evidence. The court must weigh whether safeguards were required during custodial interrogation.`,
+    think:"Hint: custodial warnings",
     correctCase:"Miranda v. Arizona",
     correctImpact:"Standardized custodial rights warnings; changed interrogation practices nationwide."
   },
@@ -626,6 +785,7 @@ const COURT_DOSSIERS = [
     id:"d6",
     dossier:
 `A suspect repeatedly asks to speak with a lawyer while detectives continue questioning and present misleading claims about evidence. The suspect eventually confesses. Lawyers argue the denial of counsel during the critical investigative stage undermined the fairness of the process and pressured an involuntary confession.`,
+    think:"Hint: counsel denied",
     correctCase:"Escobedo v. Illinois",
     correctImpact:"Expanded access to counsel during police questioning in key circumstances; influenced Miranda."
   },
@@ -633,12 +793,23 @@ const COURT_DOSSIERS = [
     id:"d7",
     dossier:
 `A family’s religious community educates children through eighth grade, then trains them through community apprenticeships. The state requires attendance until age 16 to promote civic literacy. The family argues the law substantially burdens religious practice and the alternative training produces responsible citizens.`,
+    think:"Hint: religious liberty",
     correctCase:"Wisconsin v. Yoder",
     correctImpact:"Strengthened protections for religious liberty against some state requirements."
   }
 ];
 
-const OBSTACLE_CARDS = [
+/* ---- ROOM 4 RESISTANCE CARDS (simplified wording in standard) ---- */
+const OBSTACLE_CARDS_STANDARD = [
+  { id:"o1", text:"Uses state power (ex: National Guard) to stop court-ordered school integration.", tag:"Orval Faubus" },
+  { id:"o2", text:"Governor uses speeches + state power to fight civil rights laws (“Segregation forever”).", tag:"George Wallace" },
+  { id:"o3", text:"A group in Congress delays bills using committees/filibusters to block civil rights laws.", tag:"Southern Democrats (Congressional bloc)" },
+  { id:"o4", text:"Voting barriers: poll taxes, literacy tests, intimidation, and unfair enforcement.", tag:"Jim Crow system" },
+  { id:"o5", text:"Secret group uses threats/violence to scare people away from activism and voting.", tag:"Ku Klux Klan (KKK)" },
+  { id:"o6", text:"Officials arrest protesters or require permits to make protest harder.", tag:"Status quo defenders" },
+];
+
+const OBSTACLE_CARDS_HONORS = [
   { id:"o1", text:"State officials use state power (like the National Guard) to block federal court-ordered integration.", tag:"Orval Faubus" },
   { id:"o2", text:"A governor publicly declares ‘segregation forever’ and uses rhetoric + state authority to resist federal civil rights enforcement.", tag:"George Wallace" },
   { id:"o3", text:"A bloc in Congress uses committee control and filibusters to delay or weaken civil rights legislation.", tag:"Southern Democrats (Congressional bloc)" },
@@ -647,51 +818,31 @@ const OBSTACLE_CARDS = [
   { id:"o6", text:"Officials claim civil rights activism is ‘outside agitation’ and attempt to restrict protests through permits and arrests.", tag:"Status quo defenders" },
 ];
 
+/* ---- ROOM 5 EVIDENCE WALL ---- */
 const LEADER_THREADS = [
-  {
-    leader:"Martin Luther King Jr.",
-    method:"Nonviolent direct action; civil disobedience",
-    orgEvent:"SCLC; March on Washington; Birmingham campaigns",
-    legacy:"Helped build national pressure for Civil Rights Act and Voting Rights Act"
-  },
-  {
-    leader:"Rosa Parks",
-    method:"Strategic resistance; community mobilization",
-    orgEvent:"Montgomery Bus Boycott; NAACP networks",
-    legacy:"Catalyst for sustained mass protest and new leadership momentum"
-  },
-  {
-    leader:"Cesar Chavez",
-    method:"Boycotts; strikes; coalition organizing",
-    orgEvent:"United Farm Workers; Delano Grape Strike",
-    legacy:"Expanded civil rights frame to labor rights and Latino political power"
-  },
-  {
-    leader:"Dolores Huerta",
-    method:"Grassroots organizing; voter education",
-    orgEvent:"UFW; bargaining campaigns",
-    legacy:"Strengthened organizing capacity and political participation for farmworkers"
-  },
-  {
-    leader:"Betty Friedan",
-    method:"Persuasive writing; institutional organizing",
-    orgEvent:"NOW; women’s rights advocacy",
-    legacy:"Accelerated policy and cultural shifts; helped shape Title IX era outcomes"
-  },
-  {
-    leader:"Malcolm X",
-    method:"Black pride; self-defense rhetoric; political critique",
-    orgEvent:"Nation of Islam (early); broader Black Power influence",
-    legacy:"Shifted debates on civil rights strategy; influenced later activism and identity politics"
-  }
+  { leader:"Martin Luther King Jr.", method:"Nonviolent direct action; civil disobedience", orgEvent:"SCLC; March on Washington; Birmingham campaigns", legacy:"Helped build national pressure for Civil Rights Act and Voting Rights Act" },
+  { leader:"Rosa Parks", method:"Strategic resistance; community mobilization", orgEvent:"Montgomery Bus Boycott; NAACP networks", legacy:"Catalyst for sustained mass protest and new leadership momentum" },
+  { leader:"Cesar Chavez", method:"Boycotts; strikes; coalition organizing", orgEvent:"United Farm Workers; Delano Grape Strike", legacy:"Expanded civil rights frame to labor rights and Latino political power" },
+  { leader:"Dolores Huerta", method:"Grassroots organizing; voter education", orgEvent:"UFW; bargaining campaigns", legacy:"Strengthened organizing capacity and political participation for farmworkers" },
+  { leader:"Betty Friedan", method:"Persuasive writing; institutional organizing", orgEvent:"NOW; women’s rights advocacy", legacy:"Accelerated policy and cultural shifts; helped shape Title IX era outcomes" },
+  { leader:"Malcolm X", method:"Black pride; self-defense rhetoric; political critique", orgEvent:"Nation of Islam (early); broader Black Power influence", legacy:"Shifted debates on civil rights strategy; influenced later activism and identity politics" }
 ];
 
-const ORG_EVENT_BANK = [
+const ORG_EVENT_BANK_BASE = [
   "SCLC","SNCC","NAACP","March on Washington","Montgomery Bus Boycott","Birmingham Campaign",
   "United Farm Workers","Delano Grape Strike","NOW","AIM","Freedom Rides","Sit-Ins"
 ];
 
-const METHOD_BANK = [
+const METHOD_BANK_STANDARD = [
+  "Nonviolent direct action; civil disobedience",
+  "Boycotts; strikes; coalition organizing",
+  "Litigation + legal strategy",
+  "Grassroots organizing; voter education",
+  "Black pride; self-defense rhetoric; political critique",
+  "Persuasive writing; institutional organizing",
+];
+
+const METHOD_BANK_HONORS = [
   "Nonviolent direct action; civil disobedience",
   "Boycotts; strikes; coalition organizing",
   "Litigation + legal strategy",
@@ -699,69 +850,45 @@ const METHOD_BANK = [
   "Black pride; self-defense rhetoric; political critique",
   "Persuasive writing; institutional organizing",
   "Direct action youth-led sit-ins",
-  "Media strategy + moral framing"
+  "Media strategy + moral framing",
 ];
 
-const LEGACY_BANK = [
+const LEGACY_BANK_STANDARD = [
   "Helped build national pressure for Civil Rights Act and Voting Rights Act",
   "Catalyst for sustained mass protest and new leadership momentum",
   "Expanded civil rights frame to labor rights and Latino political power",
   "Strengthened organizing capacity and political participation for farmworkers",
   "Accelerated policy and cultural shifts; helped shape Title IX era outcomes",
   "Shifted debates on civil rights strategy; influenced later activism and identity politics",
+];
+
+const LEGACY_BANK_HONORS = [
+  ...LEGACY_BANK_STANDARD,
   "Created legal precedents that undermined segregation and unequal treatment",
   "Boosted minority political participation and reshaped party coalitions over time"
 ];
 
-const GREAT_SOCIETY_LAB = [
-  {
-    id:"g1",
-    scenario:"A retired worker can’t afford hospital care after leaving the workforce. Their family worries that a single illness could bankrupt them.",
-    correctPolicy:"Medicare",
-    impact:"Long-term: expanded health access for seniors and became a major part of federal spending debates."
-  },
-  {
-    id:"g2",
-    scenario:"A low-income family with children often has to choose between rent and groceries. A program helps them purchase food consistently.",
-    correctPolicy:"Food Stamp Act / SNAP expansion",
-    impact:"Long-term: reduced food insecurity and became a centerpiece in poverty policy debates."
-  },
-  {
-    id:"g3",
-    scenario:"A district serving many low-income students receives federal funding to improve instruction and close opportunity gaps.",
-    correctPolicy:"Elementary and Secondary Education Act (ESEA)",
-    impact:"Long-term: increased federal role in schools and laid groundwork for later accountability reforms."
-  },
-  {
-    id:"g4",
-    scenario:"A city receives support for affordable housing and community development, responding to overcrowding and unsafe conditions.",
-    correctPolicy:"HUD / Housing and Urban Development initiatives",
-    impact:"Long-term: shaped urban renewal debates, housing access, and patterns of segregation/inequality."
-  },
-  {
-    id:"g5",
-    scenario:"A preschool program focuses on early literacy, nutrition, and family support so children start school ready to learn.",
-    correctPolicy:"Head Start",
-    impact:"Long-term: strengthened early childhood education as a public policy priority."
-  },
-  {
-    id:"g6",
-    scenario:"A university expands women’s athletics and addresses sex discrimination complaints in admissions and programming.",
-    correctPolicy:"Title IX",
-    impact:"Long-term: dramatically increased women’s participation in sports/academics and reshaped campus policies."
-  },
-  {
-    id:"g7",
-    scenario:"A company adopts targeted hiring and promotion practices after evidence of long-standing discrimination patterns.",
-    correctPolicy:"Affirmative action",
-    impact:"Long-term: expanded opportunity debates and prompted major legal/political controversies."
-  },
-  {
-    id:"g8",
-    scenario:"A local clinic provides medical care for low-income families who don’t have employer insurance or savings.",
-    correctPolicy:"Medicaid",
-    impact:"Long-term: expanded healthcare safety net and became central to state–federal policy conflicts."
-  },
+/* ---- ROOM 6 GREAT SOCIETY ---- */
+const GREAT_SOCIETY_LAB_STANDARD = [
+  { id:"g1", scenario:"A retired person can’t afford hospital care. A program helps seniors pay for medical care.", correctPolicy:"Medicare", impact:"Long-term: more seniors get healthcare; debates continue about cost and government role." },
+  { id:"g2", scenario:"A low-income family often has to choose between rent and groceries. A program helps them buy food.", correctPolicy:"Food Stamp Act / SNAP expansion", impact:"Long-term: helps reduce hunger; debates continue about funding and rules." },
+  { id:"g3", scenario:"A school with many low-income students gets federal help for reading/math supports and resources.", correctPolicy:"Elementary and Secondary Education Act (ESEA)", impact:"Long-term: bigger federal role in schools; later reforms build on this idea." },
+  { id:"g4", scenario:"A city needs more safe, affordable housing and community development support.", correctPolicy:"HUD / Housing and Urban Development initiatives", impact:"Long-term: impacts city growth and housing; debates continue about fairness and access." },
+  { id:"g5", scenario:"A preschool program supports early learning, nutrition, and family support so kids start ready.", correctPolicy:"Head Start", impact:"Long-term: early childhood education becomes a bigger national priority." },
+  { id:"g6", scenario:"A school expands opportunities for girls in sports and programs and stops sex discrimination.", correctPolicy:"Title IX", impact:"Long-term: huge growth in women’s sports and education opportunities." },
+  { id:"g7", scenario:"A workplace uses targeted hiring/promotion steps to address long patterns of discrimination.", correctPolicy:"Affirmative action", impact:"Long-term: increases opportunity; also causes major legal and political debates." },
+  { id:"g8", scenario:"A low-income family needs medical care but has no insurance. A program helps pay for it.", correctPolicy:"Medicaid", impact:"Long-term: expands the safety net; debates continue about who should qualify and costs." },
+];
+
+const GREAT_SOCIETY_LAB_HONORS = [
+  { id:"g1", scenario:"A retired worker can’t afford hospital care after leaving the workforce. Their family worries that a single illness could bankrupt them.", correctPolicy:"Medicare", impact:"Long-term: expanded health access for seniors and became a major part of federal spending debates." },
+  { id:"g2", scenario:"A low-income family with children often has to choose between rent and groceries. A program helps them purchase food consistently.", correctPolicy:"Food Stamp Act / SNAP expansion", impact:"Long-term: reduced food insecurity and became a centerpiece in poverty policy debates." },
+  { id:"g3", scenario:"A district serving many low-income students receives federal funding to improve instruction and close opportunity gaps.", correctPolicy:"Elementary and Secondary Education Act (ESEA)", impact:"Long-term: increased federal role in schools and laid groundwork for later accountability reforms." },
+  { id:"g4", scenario:"A city receives support for affordable housing and community development, responding to overcrowding and unsafe conditions.", correctPolicy:"HUD / Housing and Urban Development initiatives", impact:"Long-term: shaped urban renewal debates, housing access, and patterns of segregation/inequality." },
+  { id:"g5", scenario:"A preschool program focuses on early literacy, nutrition, and family support so children start school ready to learn.", correctPolicy:"Head Start", impact:"Long-term: strengthened early childhood education as a public policy priority." },
+  { id:"g6", scenario:"A university expands women’s athletics and addresses sex discrimination complaints in admissions and programming.", correctPolicy:"Title IX", impact:"Long-term: dramatically increased women’s participation in sports/academics and reshaped campus policies." },
+  { id:"g7", scenario:"A company adopts targeted hiring and promotion practices after evidence of long-standing discrimination patterns.", correctPolicy:"Affirmative action", impact:"Long-term: expanded opportunity debates and prompted major legal/political controversies." },
+  { id:"g8", scenario:"A local clinic provides medical care for low-income families who don’t have employer insurance or savings.", correctPolicy:"Medicaid", impact:"Long-term: expanded healthcare safety net and became central to state–federal policy conflicts." },
 ];
 
 const GS_POLICY_CHOICES = [
@@ -770,6 +897,7 @@ const GS_POLICY_CHOICES = [
   "Title IX","Affirmative action"
 ];
 
+/* ---- ROOM 7 BOSS STAGE ---- */
 const COALITION_OPTIONS = [
   { k:"SCLC", group:"African American", req:"AA" },
   { k:"SNCC", group:"African American", req:"AA" },
@@ -784,82 +912,41 @@ const COALITION_OPTIONS = [
 
   { k:"AIM", group:"American Indian", req:"AI" },
   { k:"Tribal sovereignty activists", group:"American Indian", req:"AI" },
-
-  { k:"Coalition: churches + students + local leaders", group:"Cross-movement", req:"X" },
-  { k:"Legal defense fund strategy", group:"Cross-movement", req:"X" },
 ];
 
 const HEIST_CHAIN = [
   { id:"c1", text:"Jim Crow laws + violence suppress rights and political voice.", correctPos:0 },
-  { id:"c2", text:"Grassroots organizing builds sustained pressure (boycotts, sit-ins, marches).", correctPos:1 },
+  { id:"c2", text:"Grassroots organizing builds pressure (boycotts, sit-ins, marches).", correctPos:1 },
   { id:"c3", text:"Media coverage shapes national opinion and increases urgency.", correctPos:2 },
   { id:"c4", text:"Federal action grows: executive enforcement + court rulings.", correctPos:3 },
   { id:"c5", text:"Congress passes landmark laws (1964 + 1965) and enforcement expands.", correctPos:4 },
   { id:"c6", text:"Long-term impacts: participation increases; ongoing debates over equality and policy.", correctPos:5 },
 ];
 
-const HEIST_CIPHER = {
-  final:"JUSTICEPATH",
-  hint:"You’re building a path from barriers → action → change → impact."
-};
+const HEIST_CIPHER = { final:"JUSTICEPATH", hint:"Build the path from barriers → action → laws → long-term change." };
 
-const TEKS = [
-  { k:"9A",  txt:"(9)(A) development of civil rights; 13th/14th/15th/19th" },
-  { k:"9B",  txt:"(9)(B) Jim Crow + KKK obstacles; voter suppression" },
-  { k:"9C",  txt:"(9)(C) political organizations (AA/Chicano/American Indian/Women)" },
-  { k:"9D",  txt:"(9)(D) leaders: MLK, Chávez, Huerta, Parks, Friedan" },
-  { k:"9E",  txt:"(9)(E) Black Panthers vs MLK nonviolent approach" },
-  { k:"9F",  txt:"(9)(F) MLK writings impact (Dream + Birmingham letter)" },
-  { k:"9G",  txt:"(9)(G) presidential actions + congressional votes (armed forces, CRA 1964, VRA 1965)" },
-  { k:"9H",  txt:"(9)(H) Wallace/Faubus/Southern Democrats status quo" },
-  { k:"9I",  txt:"(9)(I) changes resulting from movement; political participation" },
-  { k:"9J",  txt:"(9)(J) Sweatt v Painter + Brown protect minority rights" },
-  { k:"17D", txt:"(17)(D) Great Society, affirmative action, Title IX outcomes" },
-];
-
-/** =========================================================
- *  STAGES
- *  ========================================================= */
+/* =========================================================
+   STAGES
+   ========================================================= */
 const STAGES = [
   { id:1, title:"Room 1: Timeline Forge", desc:"Build the movement timeline (reorder puzzle).", render:renderStage1 },
-  { id:2, title:"Room 2: Strategy Briefing", desc:"SCLC vs Panthers (analysis writing + keywords).", render:renderStage2 },
-  { id:3, title:"Room 3: Supreme Court Dossiers", desc:"Case + long-term impact (deep scenarios).", render:renderStage3 },
-  { id:4, title:"Room 4: Resistance Intel", desc:"Classify obstacles + explain how status quo held.", render:renderStage4 },
+  { id:2, title:"Room 2: Strategy Briefing", desc:"SCLC vs Panthers (guided compare + evidence).", render:renderStage2 },
+  { id:3, title:"Room 3: Supreme Court Dossiers", desc:"Case + long-term impact (realistic scenarios).", render:renderStage3 },
+  { id:4, title:"Room 4: Resistance Intel", desc:"Classify obstacles + explain how resistance worked.", render:renderStage4 },
   { id:5, title:"Room 5: The Evidence Wall", desc:"Build leader connections (thread-building puzzle).", render:renderStage5 },
   { id:6, title:"Room 6: Great Society Policy Lab", desc:"Match policies to scenarios + long-term impacts.", render:renderStage6 },
-  { id:7, title:"Room 7: The Freedom Path Heist", desc:"Coalition + cause-effect chain + cipher (boss stage).", render:renderStage7 },
+  { id:7, title:"Room 7: The Freedom Path Heist", desc:"Build the team + chain + cipher (boss stage).", render:renderStage7 },
   { id:8, title:"Exit Door: Escape!", desc:"Final code unlock.", render:renderFinal },
 ];
 
-/** =========================================================
- *  STATE
- *  ========================================================= */
+/* =========================================================
+   STATE
+   ========================================================= */
 let state = {
   unlocked: {1:false,2:false,3:false,4:false,5:false,6:false,7:false},
   activeStage: 1,
   teksDone: new Set(),
 };
-
-const $ = (sel) => document.querySelector(sel);
-
-function shuffle(arr){
-  const a = arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i],a[j]] = [a[j],a[i]];
-  }
-  return a;
-}
-function pickRandom(arr, n){ return shuffle(arr).slice(0, n); }
-
-function escapeHTML(str){
-  return String(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
 
 function markTEKS(keys){
   for(const k of keys) state.teksDone.add(k);
@@ -869,22 +956,20 @@ function markTEKS(keys){
 function renderTEKSTracker(){
   const rows = TEKS.map(t => {
     const done = state.teksDone.has(t.k);
-    return `<div class="chip ${done ? "ok":"no"}">${done ? "✓":"•"} <b>${t.k}</b> ${t.txt}</div>`;
+    return `<div class="chip ${done ? "ok":"no"}">${done ? "✓":"•"} <b>${t.k}</b> ${escapeHTML(t.txt)}</div>`;
   }).join("");
   $("#teksTracker").innerHTML = `<div class="chipRow">${rows}</div>`;
 }
 
-/** =========================================================
- *  TRAVEL ANIMATION
- *  ========================================================= */
+/* =========================================================
+   TRAVEL ANIMATION
+   ========================================================= */
 function playTravelAnimation(label = "Moving to the next room…"){
   const overlay = document.getElementById("travelOverlay");
   const text = document.getElementById("travelText");
   if(!overlay || !text) return Promise.resolve();
 
   text.textContent = label;
-
-  // restart animation
   overlay.classList.remove("show");
   void overlay.offsetWidth;
   overlay.classList.add("show");
@@ -897,9 +982,17 @@ function playTravelAnimation(label = "Moving to the next room…"){
   });
 }
 
-/** =========================================================
- *  UI
- *  ========================================================= */
+/* =========================================================
+   UI
+   ========================================================= */
+function updateModeUI(){
+  $("#modeLabel").textContent = (DIFFICULTY === "honors") ? "Honors" : "Standard";
+  $("#subtitle").textContent =
+    (DIFFICULTY === "honors")
+      ? "Honors Mode: tougher vocabulary + tighter checks. Complete all 7 locks to escape."
+      : "Standard Mode: STAAR-friendly language + scaffolds. Complete all 7 locks to escape.";
+}
+
 function updateUI(){
   const open = Object.values(state.unlocked).filter(Boolean).length;
   $("#lockPill").textContent = `Locks Opened: ${open} / 7`;
@@ -926,7 +1019,7 @@ function updateUI(){
     dot.className = "dot" + (done ? " done" : "") + (isLive ? " live" : "");
 
     const text = document.createElement("div");
-    text.innerHTML = `<div class="stageTitle">${s.title}</div><div class="stageDesc">${s.desc}</div>`;
+    text.innerHTML = `<div class="stageTitle">${escapeHTML(s.title)}</div><div class="stageDesc">${escapeHTML(s.desc)}</div>`;
     btn.append(dot, text);
 
     btn.addEventListener("click", async () => {
@@ -965,10 +1058,10 @@ async function unlockStage(id){
   renderActiveStage(true);
 }
 
-/** =========================================================
- *  RESET
- *  ========================================================= */
-function wireReset(){
+/* =========================================================
+   RESET + MODE TOGGLE
+   ========================================================= */
+function wireControls(){
   $("#resetAll").addEventListener("click", () => {
     if(!confirm("Reset all progress?")) return;
     state = { unlocked:{1:false,2:false,3:false,4:false,5:false,6:false,7:false}, activeStage:1, teksDone:new Set() };
@@ -976,33 +1069,46 @@ function wireReset(){
     updateUI();
     renderActiveStage(true);
   });
+
+  $("#toggleMode").addEventListener("click", () => {
+    DIFFICULTY = (DIFFICULTY === "honors") ? "standard" : "honors";
+    updateModeUI();
+    // Keep progress; just re-render current room with new language/scaffolds
+    renderActiveStage(true);
+  });
 }
 
-/* =========================
- * ROOM 1: Timeline Forge (reorder puzzle)
- * TEKS: 9A, 9J, 9G
- * ========================= */
+/* =========================================================
+   ROOM 1: Timeline Forge
+   TEKS: 9A, 9J, 9G
+   ========================================================= */
 function renderStage1(){
-  const must = ["sw","bo","cr","vr"];
-  const pool = TIMELINE_EVENTS.slice();
-  const selected = [];
+  const events = (DIFFICULTY === "honors") ? TIMELINE_EVENTS_HONORS : TIMELINE_EVENTS_STANDARD;
 
+  // Always include key items, then add a few more
+  const must = ["pl","na","sw","bo","cr","vr"];
+  const selected = [];
   for(const id of must){
-    const ev = pool.find(x => x.id === id);
+    const ev = events.find(x => x.id === id);
     if(ev) selected.push(ev);
   }
-  const remaining = pool.filter(x => !must.includes(x.id));
-  selected.push(...pickRandom(remaining, 4));
-  const shuffled = shuffle(selected);
+  const remaining = events.filter(x => !must.includes(x.id));
+  selected.push(...pickRandom(remaining, 1)); // keep list manageable for standard; honors still ok
+  const listStart = shuffle(selected);
 
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
       <h3>Room 1: Timeline Forge</h3>
-      <p>Reorder the events into the most accurate sequence. Use ▲ ▼ to move events. This is your “pathway blueprint.”</p>
+      <p>${DIFFICULTY==="honors"
+        ? "Reorder the events into the most accurate sequence. Use ▲ ▼ to move events. This is your “pathway blueprint.”"
+        : "Put the events in the best order. Use ▲ ▼ to move them. This builds your “pathway map.”"}</p>
     </div>
 
     <div class="status warn">
-      <b>Rule:</b> The order matters. Think cause → action → response → legislation → long-term change.
+      <b>${DIFFICULTY==="honors" ? "Rule:" : "Rule:"}</b>
+      ${DIFFICULTY==="honors"
+        ? "The order matters. Think cause → action → response → law → long-term change."
+        : "The order matters. Think: what happens first → what happens next → what laws change things."}
     </div>
 
     <div id="tl"></div>
@@ -1015,13 +1121,8 @@ function renderStage1(){
     <div class="status" id="tlStatus">Build the timeline, then check.</div>
   `;
 
-  let list = shuffled.slice();
+  let list = listStart.slice();
   const tl = $("#tl");
-
-  function keyForSort(ev){
-    const map = { pl:1896, na:1909, sw:1946, bo:1954, mo:1955, lr:1957, cr:1964, vr:1965, fh:1968 };
-    return map[ev.id] || 9999;
-  }
 
   function renderList(){
     tl.innerHTML = "";
@@ -1063,98 +1164,170 @@ function renderStage1(){
   });
 
   $("#tlCheck").addEventListener("click", () => {
-    const sorted = list.slice().sort((a,b)=> keyForSort(a)-keyForSort(b));
+    const sorted = list.slice().sort((a,b)=>a.year-b.year);
     const ok = sorted.every((ev, i) => ev.id === list[i].id);
 
     const box = $("#tlStatus");
     if(ok){
       box.className = "status good";
-      box.textContent = "Unlocked! Your timeline blueprint is solid.";
+      box.textContent = "Unlocked! Your timeline map is solid.";
       markTEKS(["9A","9J","9G"]);
-      setTimeout(()=>unlockStage(1), 350);
+      setTimeout(()=>unlockStage(1), 300);
     } else {
       box.className = "status bad";
-      box.textContent = "Not quite. Look closely at the early legal groundwork (Sweatt → Brown) and then the national response (1964 → 1965 → 1968).";
+      box.textContent =
+        (DIFFICULTY==="honors")
+          ? "Not quite. Watch the order: Sweatt → Brown → Montgomery → Little Rock → 1964 → 1965."
+          : "Not quite. Big tip: Sweatt comes before Brown, and Brown comes before Montgomery and Little Rock.";
     }
   });
 
   renderList();
 }
 
-/* =========================
- * ROOM 2: Strategy Briefing (analysis writing)
- * TEKS: 9E, 9F
- * ========================= */
+/* =========================================================
+   ROOM 2: Strategy Briefing (Simplified + Mode thresholds)
+   TEKS: 9E, 9F
+   ========================================================= */
 function renderStage2(){
+  const th = getThresholds();
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
-      <h3>Room 2: Strategy Briefing</h3>
-      <p>You are advising a coalition. Explain the difference between the <b>SCLC</b> approach and the <b>Black Panther Party</b> approach — and why each appealed to different people in different moments.</p>
+      <h3>Room 2: Strategy Briefing (Student-Friendly)</h3>
+      <p>
+        Your mission: compare the <b>SCLC</b> and the <b>Black Panther Party</b> and connect MLK’s words to real change.
+      </p>
     </div>
 
     <div class="status warn">
-      To unlock: include <b>strategy</b>, <b>methods</b>, and <b>a historical reason</b>. Mention how MLK’s speeches/writings shaped public pressure.
+      <b>Unlock checklist:</b>
+      Select <b>2 true</b> statements for SCLC + <b>2 true</b> statements for the Panthers,
+      write a <b>2–3 sentence</b> explanation, and connect <b>one</b> MLK idea to impact.
+      ${DIFFICULTY==="honors" ? "<br><b>Honors:</b> be specific in your explanation." : ""}
     </div>
 
-    <textarea id="s2Text" placeholder="Write 4–7 sentences. Strong answers: describe nonviolent direct action/civil disobedience (SCLC) vs Black Power/self-defense/community programs (Panthers), and explain context + impact."></textarea>
+    <div class="grid3" style="margin-top:12px;">
+      <div class="status">
+        <b>SCLC (pick 2 true)</b>
+        <div class="mini" style="margin-top:10px;">
+          <label><input type="checkbox" class="s2_sclc" value="nv"> Used nonviolent direct action (marches, boycotts, sit-ins).</label><br><br>
+          <label><input type="checkbox" class="s2_sclc" value="church"> Often organized through churches and community networks.</label><br><br>
+          <label><input type="checkbox" class="s2_sclc" value="armed"> Focused mainly on armed self-defense as the primary strategy.</label><br><br>
+          <label><input type="checkbox" class="s2_sclc" value="separate"> Wanted legal segregation to remain in place.</label>
+        </div>
+      </div>
+
+      <div class="status">
+        <b>Black Panthers (pick 2 true)</b>
+        <div class="mini" style="margin-top:10px;">
+          <label><input type="checkbox" class="s2_pan" value="bp"> Supported Black Power—pride, self-determination, and community control.</label><br><br>
+          <label><input type="checkbox" class="s2_pan" value="programs"> Ran community programs (ex: free breakfast / health support).</label><br><br>
+          <label><input type="checkbox" class="s2_pan" value="onlyvotes"> Focused only on voting laws and avoided community organizing.</label><br><br>
+          <label><input type="checkbox" class="s2_pan" value="nochange"> Opposed civil rights progress and wanted to roll it back.</label>
+        </div>
+      </div>
+
+      <div class="status">
+        <b>MLK “Words → Impact” (pick 1)</b>
+        <select id="s2_mlk" style="margin-top:10px;">
+          <option value="">Select…</option>
+          <option value="dream">“I Have a Dream” (1963) helped build national support for civil rights laws.</option>
+          <option value="bham">“Letter from Birmingham Jail” defended civil disobedience against unjust laws.</option>
+          <option value="none">MLK’s speeches had no effect on public opinion or legislation.</option>
+        </select>
+
+        <div style="margin-top:10px;">
+          <input id="s2_mlkImpact" type="text" placeholder="1 sentence: How did that idea help the movement?" />
+        </div>
+
+        <div class="actions" style="margin-top:10px;">
+          <button id="s2Starter">Sentence Starter</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="status" style="margin-top:12px;">
+      <b>2–3 sentences:</b> Why might different people choose SCLC’s approach vs. the Panthers’ approach?
+      <textarea id="s2_reason" placeholder="Example starter: Some people preferred ___ because ___. Others preferred ___ because ___." style="margin-top:10px;"></textarea>
+    </div>
 
     <div class="actions">
-      <button id="s2Rubric">Show Unlock Rubric</button>
+      <button id="s2Reset">Clear Choices</button>
       <button class="primary" id="s2Check">Open Door to Room 3</button>
     </div>
 
-    <div class="hint" id="s2Hint">
-      <b>Unlock Rubric:</b><br>
-      • Mentions SCLC + nonviolent direct action/civil disobedience<br>
-      • Mentions Panthers + Black Power/self-defense and/or community programs<br>
-      • Explains a context reason (violence, frustration, slow change, police brutality, etc.)<br>
-      • References MLK’s influence (speech/letter/writings shaping national opinion)
-    </div>
-
-    <div class="status" id="s2Status">Write your briefing, then submit.</div>
+    <div class="status" id="s2Status">Complete all parts, then check.</div>
   `;
 
-  $("#s2Rubric").addEventListener("click", () => $("#s2Hint").classList.toggle("show"));
+  const correctSCLC = new Set(["nv","church"]);
+  const correctPAN  = new Set(["bp","programs"]);
+
+  $("#s2Starter").addEventListener("click", () => {
+    const current = ($("#s2_mlkImpact").value || "").trim();
+    if(current.length) return;
+    $("#s2_mlkImpact").value = "This helped because it changed public opinion and increased pressure for laws to change.";
+  });
+
+  $("#s2Reset").addEventListener("click", () => {
+    document.querySelectorAll(".s2_sclc, .s2_pan").forEach(x => x.checked = false);
+    $("#s2_mlk").value = "";
+    $("#s2_mlkImpact").value = "";
+    $("#s2_reason").value = "";
+    $("#s2Status").className = "status";
+    $("#s2Status").textContent = "Cleared. Try again.";
+  });
 
   $("#s2Check").addEventListener("click", () => {
-    const text = ($("#s2Text").value || "").toLowerCase();
-    const len = text.replace(/\s/g,"").length;
+    const sclcChecked = Array.from(document.querySelectorAll(".s2_sclc:checked")).map(x=>x.value);
+    const panChecked  = Array.from(document.querySelectorAll(".s2_pan:checked")).map(x=>x.value);
 
-    const hasSCLC = /(sclc|king|nonviolent|civil disobedience|march|boycott|sit-in|peaceful|direct action)/.test(text);
-    const hasPanthers = /(panther|black power|self[- ]defen|armed|militant|community|free breakfast|police)/.test(text);
-    const hasContext = /(context|because|after|due to|in response|frustrat|violence|police|slow|backlash)/.test(text);
-    const hasMLKWriting = /(dream|birmingham|letter|speech|writings|moral|justice)/.test(text);
+    const sclcOk = sclcChecked.length === 2 && sclcChecked.every(v => correctSCLC.has(v));
+    const panOk  = panChecked.length === 2 && panChecked.every(v => correctPAN.has(v));
 
-    const ok = hasSCLC && hasPanthers && hasContext && hasMLKWriting && len >= 260;
+    const mlkChoice = $("#s2_mlk").value;
+    const mlkImpact = ($("#s2_mlkImpact").value || "").trim();
+    const mlkOk = (mlkChoice === "dream" || mlkChoice === "bham") && mlkImpact.length >= th.r2MLKMin;
+
+    const reason = ($("#s2_reason").value || "").trim();
+    const reasonOk = reason.replace(/\s/g,"").length >= th.r2ReasonMin && /because|so|since/i.test(reason);
 
     const box = $("#s2Status");
-    if(ok){
+
+    if(sclcOk && panOk && mlkOk && reasonOk){
       box.className = "status good";
-      box.textContent = "Unlocked! Your strategy briefing shows real historical thinking.";
+      box.textContent = "Unlocked! You compared strategies and connected MLK’s words to impact.";
       markTEKS(["9E","9F"]);
-      setTimeout(()=>unlockStage(2), 350);
+      setTimeout(()=>unlockStage(2), 320);
     } else {
       box.className = "status bad";
-      box.textContent = "Not yet. Make it longer and more analytical: explain WHY strategies differed, include context, and connect MLK’s writings/speeches to public pressure and policy change.";
+      box.textContent =
+        "Not yet. Check: (1) exactly 2 true for SCLC, (2) exactly 2 true for Panthers, (3) pick a real MLK item + 1 sentence impact, (4) 2–3 sentence explanation using 'because'.";
     }
   });
 }
 
-/* =========================
- * ROOM 3: Supreme Court Dossiers (case + long-term impact)
- * TEKS: 9J + supports 9I
- * ========================= */
+/* =========================================================
+   ROOM 3: Supreme Court Dossiers (scaffolded in standard)
+   TEKS: 9J + supports 9I
+   ========================================================= */
 function renderStage3(){
   const cases = COURT_CASES.map(c => c.key);
-  const impactMap = new Map();
-  COURT_CASES.forEach(c => c.impacts.forEach(i => impactMap.set(i, c.key)));
-  const allImpacts = Array.from(impactMap.keys());
-  const dossiers = COURT_DOSSIERS.slice();
+  const dossiers = (DIFFICULTY === "honors") ? COURT_DOSSIERS_HONORS : COURT_DOSSIERS_STANDARD;
+
+  // Build impact list based on mode
+  const allImpacts = [];
+  for(const c of COURT_CASES){
+    const arr = (DIFFICULTY==="honors") ? c.impactsHonors : c.impactsStandard;
+    allImpacts.push(...arr);
+  }
 
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
       <h3>Room 3: Supreme Court Dossiers</h3>
-      <p>Each dossier is <b>3–4 sentences</b> and not a carbon copy. For each: choose the most relevant case AND the best long-term impact.</p>
+      <p>
+        For each dossier: choose the best <b>case</b> AND the best <b>long-term impact</b>.
+        ${DIFFICULTY==="honors" ? "Scenarios are subtle. Read carefully." : "Use the “Think about” hint under each dossier."}
+      </p>
     </div>
 
     <div class="status warn">
@@ -1164,25 +1337,26 @@ function renderStage3(){
     <div id="dossiers"></div>
 
     <div class="actions">
-      <button id="s3HintBtn">Show Hint</button>
+      <button id="s3HintBtn">Show General Hint</button>
       <button class="primary" id="s3Check">Open Door to Room 4</button>
     </div>
 
     <div class="hint" id="s3Hint">
-      Hint: Look for <b>education equality</b> (Sweatt/Brown), <b>jury exclusion</b> (Hernandez), <b>warrant/evidence</b> (Mapp), <b>custodial warnings</b> (Miranda), <b>counsel denial</b> (Escobedo), <b>religious liberty vs state</b> (Yoder).
+      General hint:
+      Schools (Sweatt/Brown) • Jury fairness (Hernandez) • Searches/warrants/evidence (Mapp) • Rights warnings (Miranda) • Access to lawyer (Escobedo) • Religion vs state rules (Yoder)
     </div>
 
     <div class="status" id="s3Status">Work carefully. Then check.</div>
   `;
 
   const container = $("#dossiers");
-
   dossiers.forEach((d, idx) => {
     const block = document.createElement("div");
     block.className = "status";
     block.innerHTML = `
       <b>Dossier ${idx+1}</b><br>
       <div class="mini" style="margin-top:8px; white-space:pre-line">${escapeHTML(d.dossier)}</div>
+      <div class="mini" style="margin-top:10px;"><b>${DIFFICULTY==="honors" ? "Hint:" : "Think about:"}</b> ${escapeHTML(d.think)}</div>
 
       <table class="table" style="margin-top:10px;">
         <tr>
@@ -1210,6 +1384,13 @@ function renderStage3(){
 
   $("#s3HintBtn").addEventListener("click", () => $("#s3Hint").classList.toggle("show"));
 
+  // Map impacts -> correct case by scanning COURT_CASES
+  const impactToCase = new Map();
+  for(const c of COURT_CASES){
+    const arr = (DIFFICULTY==="honors") ? c.impactsHonors : c.impactsStandard;
+    arr.forEach(i => impactToCase.set(i, c.key));
+  }
+
   $("#s3Check").addEventListener("click", () => {
     let correct = 0;
     let answered = 0;
@@ -1218,6 +1399,7 @@ function renderStage3(){
       const c = $(`#case_${d.id}`).value;
       const imp = $(`#impact_${d.id}`).value;
       if(c && imp) answered++;
+
       if(c === d.correctCase && imp === d.correctImpact) correct++;
     });
 
@@ -1230,22 +1412,23 @@ function renderStage3(){
 
     if(correct >= 6){
       box.className = "status good";
-      box.textContent = `Unlocked! ${correct}/7 dossiers correct — strong constitutional reasoning.`;
+      box.textContent = `Unlocked! ${correct}/7 dossiers correct — strong court reasoning.`;
       markTEKS(["9J","9I"]);
-      setTimeout(()=>unlockStage(3), 350);
+      setTimeout(()=>unlockStage(3), 320);
     } else {
       box.className = "status bad";
-      box.textContent = `Not yet. You got ${correct}/7. Re-read the dossiers and focus on the hidden clues + long-term impact alignment.`;
+      box.textContent = `Not yet. You got ${correct}/7. Use the “Think about” line to focus on the main issue in each dossier.`;
     }
   });
 }
 
-/* =========================
- * ROOM 4: Resistance Intel
- * TEKS: 9B, 9H
- * ========================= */
+/* =========================================================
+   ROOM 4: Resistance Intel (scaffolded)
+   TEKS: 9B, 9H
+   ========================================================= */
 function renderStage4(){
-  const cards = shuffle(OBSTACLE_CARDS);
+  const th = getThresholds();
+  const cards = shuffle((DIFFICULTY==="honors") ? OBSTACLE_CARDS_HONORS : OBSTACLE_CARDS_STANDARD);
   const categories = [
     "Orval Faubus","George Wallace","Southern Democrats (Congressional bloc)",
     "Jim Crow system","Ku Klux Klan (KKK)","Status quo defenders"
@@ -1254,18 +1437,22 @@ function renderStage4(){
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
       <h3>Room 4: Resistance Intel</h3>
-      <p>Classify each “intel card” by who/what it best represents. Then write a 2–3 sentence summary of how resistance tried to protect the status quo.</p>
+      <p>
+        Classify each “intel card” by who/what it best represents.
+        Then write a short explanation of <b>how resistance tried to stop change</b>.
+      </p>
     </div>
 
     <div class="status warn">
-      Unlock requires: <b>5 of 6</b> correct classifications + a strong summary explaining <b>how</b> obstacles worked (law, violence, politics, propaganda).
+      Unlock requires: <b>5 of 6</b> correct classifications + a strong summary (mention at least <b>two</b> methods).
+      ${DIFFICULTY==="standard" ? "<br>Examples of methods: laws/state power • Congress delaying bills • voter suppression • intimidation/violence • arrests/permits." : ""}
     </div>
 
     <div id="rCards"></div>
 
     <div class="status" style="margin-top:12px;">
       <b>Summary (2–3 sentences)</b>
-      <textarea id="rSummary" placeholder="Explain how resistance maintained the status quo. Mention at least TWO different methods (state power, congressional obstruction, terror/intimidation, voter suppression, etc.)."></textarea>
+      <textarea id="rSummary" placeholder="Explain how resistance tried to keep the old system. Mention at least TWO methods (state power, Congress delaying, voter suppression, intimidation, arrests, etc.)."></textarea>
     </div>
 
     <div class="actions">
@@ -1315,9 +1502,16 @@ function renderStage4(){
     });
 
     const text = ($("#rSummary").value || "").toLowerCase();
-    const hasMethods = /(guard|state|federal|court|filibuster|committee|terror|intimid|poll|literacy|violence|kkk|propaganda|arrest|permit)/.test(text);
-    const hasTwoIdeas = (text.match(/(and|also|plus|another|both)/g) || []).length >= 1;
-    const longEnough = text.replace(/\s/g,"").length >= 180;
+    const longEnough = text.replace(/\s/g,"").length >= th.r4SummaryMin;
+
+    // Require at least TWO distinct method signals
+    const methodHits = [
+      /(guard|state|national guard|court|federal)/,
+      /(filibuster|committee|congress|block|delay)/,
+      /(poll|literacy|vote|register|suppression|intimid)/,
+      /(kkk|terror|violence|threat)/,
+      /(arrest|permit|restrict)/,
+    ].reduce((acc, re)=> acc + (re.test(text) ? 1 : 0), 0);
 
     const box = $("#rStatus");
     if(answered < cards.length){
@@ -1326,38 +1520,47 @@ function renderStage4(){
       return;
     }
 
-    if(correct >= 5 && hasMethods && hasTwoIdeas && longEnough){
+    if(correct >= 5 && methodHits >= 2 && longEnough){
       box.className = "status good";
-      box.textContent = `Unlocked! ${correct}/6 correct + strong resistance analysis.`;
+      box.textContent = `Unlocked! ${correct}/6 correct + strong resistance explanation.`;
       markTEKS(["9B","9H"]);
-      setTimeout(()=>unlockStage(4), 350);
+      setTimeout(()=>unlockStage(4), 320);
     } else {
       box.className = "status bad";
-      box.textContent = `Not yet. You got ${correct}/6. Improve your summary: explain at least TWO different methods used to protect the status quo.`;
+      box.textContent = `Not yet. You got ${correct}/6. Your summary must mention at least TWO methods used to stop change.`;
     }
   });
 
   renderCards();
 }
 
-/* =========================
- * ROOM 5: Evidence Wall
- * TEKS: 9C, 9D, 9E, 9I
- * ========================= */
+/* =========================================================
+   ROOM 5: Evidence Wall (reduced choice overload in standard)
+   TEKS: 9C, 9D, 9E, 9I
+   ========================================================= */
 function renderStage5(){
   const leaders = shuffle(LEADER_THREADS.map(x => x.leader));
-  const orgEvents = shuffle([...new Set([...ORG_EVENT_BANK, ...LEADER_THREADS.map(x=>x.orgEvent.split(";")[0].trim())])]);
-  const methods = shuffle([...new Set([...METHOD_BANK, ...LEADER_THREADS.map(x=>x.method)])]);
-  const legacies = shuffle([...new Set([...LEGACY_BANK, ...LEADER_THREADS.map(x=>x.legacy)])]);
+
+  const orgEvents = shuffle([...new Set([
+    ...ORG_EVENT_BANK_BASE,
+    ...LEADER_THREADS.map(x=>x.orgEvent.split(";")[0].trim())
+  ])]);
+
+  const methods = shuffle([...new Set((DIFFICULTY==="honors") ? METHOD_BANK_HONORS : METHOD_BANK_STANDARD)]);
+  const legacies = shuffle([...new Set((DIFFICULTY==="honors") ? LEGACY_BANK_HONORS : LEGACY_BANK_STANDARD)]);
 
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
       <h3>Room 5: The Evidence Wall</h3>
-      <p>Build “threads” that connect a <b>leader</b> → <b>method</b> → <b>organization/event</b> → <b>legacy</b>. This is a detective board, not a quiz.</p>
+      <p>
+        Build “threads” that connect a <b>leader</b> → <b>method</b> → <b>organization/event</b> → <b>impact</b>.
+        ${DIFFICULTY==="standard" ? "Use the options like a detective board: make the best match." : "Choose carefully; some options are close."}
+      </p>
     </div>
 
     <div class="status warn">
       Unlock requires <b>4 correct threads</b>.
+      ${DIFFICULTY==="standard" ? "<br>Tip: Start with what you already know (MLK→SCLC, Parks→Montgomery, Chávez/Huerta→UFW, Friedan→NOW)." : ""}
     </div>
 
     <div class="grid3" style="margin-top:12px;">
@@ -1385,7 +1588,7 @@ function renderStage5(){
     </div>
 
     <div class="status" style="margin-top:12px;">
-      <b>Legacy / Long-term impact</b>
+      <b>Impact / Long-term result</b>
       <select id="pickLegacy" style="margin-top:10px;">
         <option value="">Select…</option>
         ${legacies.map(x=>`<option>${escapeHTML(x)}</option>`).join("")}
@@ -1407,7 +1610,8 @@ function renderStage5(){
     </div>
 
     <div class="hint" id="hint5">
-      Hint: Think in “movement ecosystems.” Leaders connect to organizations, strategies, and legacies — not just isolated facts.
+      Hint: A good thread matches all 4 parts. If one part feels “off,” rebuild it.
+      ${DIFFICULTY==="standard" ? "<br>Quick anchors: MLK→SCLC; Parks→Montgomery; Chávez/Huerta→UFW; Friedan→NOW; Malcolm X→Black Power ideas." : ""}
     </div>
 
     <div class="status" id="s5Status">Pin threads, then check. Need 4 correct.</div>
@@ -1472,33 +1676,38 @@ function renderStage5(){
     const box = $("#s5Status");
     if(correct >= 4){
       box.className = "status good";
-      box.textContent = `Unlocked! ${correct} correct threads — excellent movement synthesis.`;
+      box.textContent = `Unlocked! ${correct} correct threads — great movement connections.`;
       markTEKS(["9C","9D","9E","9I"]);
-      setTimeout(()=>unlockStage(5), 350);
+      setTimeout(()=>unlockStage(5), 320);
     } else {
       box.className = "status bad";
-      box.textContent = `Not yet. You have ${correct} correct threads. You need 4. Tighten your connections (leader ↔ org/event ↔ strategy ↔ legacy).`;
+      box.textContent = `Not yet. You have ${correct} correct threads. You need 4. Try rebuilding your weakest thread.`;
     }
   });
 
   renderBoard();
 }
 
-/* =========================
- * ROOM 6: Great Society Policy Lab
- * TEKS: 17D (+ supports 9I)
- * ========================= */
+/* =========================================================
+   ROOM 6: Great Society Policy Lab (simplified in standard)
+   TEKS: 17D (+ supports 9I)
+   ========================================================= */
 function renderStage6(){
-  const items = shuffle(GREAT_SOCIETY_LAB);
+  const items = shuffle((DIFFICULTY==="honors") ? GREAT_SOCIETY_LAB_HONORS : GREAT_SOCIETY_LAB_STANDARD);
+  const allImpacts = shuffle(items.map(x => x.impact));
 
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
       <h3>Room 6: Great Society Policy Lab</h3>
-      <p>For each scenario, choose the most relevant policy and the best long-term impact statement.</p>
+      <p>
+        For each scenario: choose the best <b>policy</b> and the best <b>long-term impact</b>.
+        ${DIFFICULTY==="standard" ? "Keep it simple: who is helped + what changes long-term?" : "Match the policy logic and policy legacy."}
+      </p>
     </div>
 
     <div class="status warn">
-      Unlock requires <b>6 of 8</b> fully correct. Includes <b>Great Society</b>, <b>affirmative action</b>, and <b>Title IX</b> (and impacts).
+      Unlock requires <b>6 of 8</b> fully correct.
+      Includes <b>Great Society</b>, <b>affirmative action</b>, and <b>Title IX</b>.
     </div>
 
     <div id="gsLab"></div>
@@ -1509,15 +1718,13 @@ function renderStage6(){
     </div>
 
     <div class="hint" id="gsHint">
-      Hint: Think “who is helped,” “what need is addressed,” and “what long-term debates or changes follow.”
+      Hint: Medicare = seniors • Medicaid = low-income healthcare • SNAP = food help • ESEA = school support • HUD = housing • Head Start = preschool • Title IX = sex discrimination in education • Affirmative action = addressing past discrimination
     </div>
 
     <div class="status" id="gsStatus">Complete all items, then check.</div>
   `;
 
-  const allImpacts = shuffle(items.map(x => x.impact));
   const lab = $("#gsLab");
-
   items.forEach((it, idx) => {
     const div = document.createElement("div");
     div.className = "status";
@@ -1571,52 +1778,61 @@ function renderStage6(){
 
     if(correct >= 6){
       box.className = "status good";
-      box.textContent = `Unlocked! ${correct}/8 correct — strong policy reasoning with long-term impacts.`;
+      box.textContent = `Unlocked! ${correct}/8 correct — strong policy thinking with long-term impacts.`;
       markTEKS(["17D","9I"]);
-      setTimeout(()=>unlockStage(6), 350);
+      setTimeout(()=>unlockStage(6), 320);
     } else {
       box.className = "status bad";
-      box.textContent = `Not yet. You got ${correct}/8. Focus on matching the long-term impact to the correct program.`;
+      box.textContent = `Not yet. You got ${correct}/8. Re-match the impact statements to the correct policy.`;
     }
   });
 }
 
-/* =========================
- * ROOM 7: The Freedom Path Heist
- * TEKS: 9A, 9B, 9C, 9G, 9I
- * ========================= */
+/* =========================================================
+   ROOM 7: Boss Stage (wording friendlier in standard)
+   TEKS: 9A, 9B, 9C, 9G, 9I
+   ========================================================= */
 function renderStage7(){
+  const title = (DIFFICULTY==="honors") ? "The Freedom Path Heist (Boss Stage)" : "The Freedom Path Heist (Boss Stage)";
+  const phase1Name = (DIFFICULTY==="honors") ? "Phase 1: Coalition Builder" : "Phase 1: Build the Team";
+  const phase2Name = (DIFFICULTY==="honors") ? "Phase 2: Cause-Effect Chain" : "Phase 2: How Change Actually Happened";
+  const phase3Name = (DIFFICULTY==="honors") ? "Phase 3: Cipher Unlock" : "Phase 3: Final Code Lock";
+
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
-      <h3>Room 7: The Freedom Path Heist (Boss Stage)</h3>
-      <p>You’re assembling a cross-movement coalition to “steal” the final key from the status quo. Three phases: <b>Coalition</b> → <b>Cause-Effect Chain</b> → <b>Cipher Unlock</b>.</p>
+      <h3>Room 7: ${escapeHTML(title)}</h3>
+      <p>
+        ${DIFFICULTY==="honors"
+          ? "Three phases: Coalition → Cause/Effect → Cipher. Complete all to unlock the Exit Door."
+          : "Three phases. Complete them all to unlock the Exit Door. This ties the whole movement together."}
+      </p>
     </div>
 
     <div class="status warn">
-      To escape this room, you must complete ALL 3 phases. Each phase reveals letters. Final unlock word: <b>${HEIST_CIPHER.final.length} letters</b>.
+      To unlock: complete ALL 3 phases. Each phase reveals letters. Final unlock word: <b>${HEIST_CIPHER.final.length} letters</b>.
     </div>
 
     <div class="status" id="heistProgress">
       <b>Letters earned:</b> <span id="lettersEarned">__________</span>
-      <div class="mini" style="margin-top:6px;"><b>Cipher hint:</b> ${escapeHTML(HEIST_CIPHER.hint)}</div>
+      <div class="mini" style="margin-top:6px;"><b>Hint:</b> ${escapeHTML(HEIST_CIPHER.hint)}</div>
     </div>
 
     <div class="status">
-      <b>Phase 1: Coalition Builder</b><br>
+      <b>${escapeHTML(phase1Name)}</b><br>
       <div class="mini" style="margin-top:8px;">
         Select exactly <b>4</b> groups. Requirement: include at least <b>one</b> African American org, <b>one</b> Chicano/Latino, <b>one</b> Women’s rights, and <b>one</b> American Indian.
       </div>
       <div id="coalition" style="margin-top:10px;"></div>
       <div class="actions">
-        <button class="primary" id="coalitionLock">Lock Coalition</button>
+        <button class="primary" id="coalitionLock">Lock Team</button>
       </div>
       <div class="status" id="coalitionStatus">Pick 4 groups, then lock.</div>
     </div>
 
     <div class="status">
-      <b>Phase 2: Cause-Effect Chain</b><br>
+      <b>${escapeHTML(phase2Name)}</b><br>
       <div class="mini" style="margin-top:8px;">
-        Reorder the chain into the most accurate path from barriers → activism → national change → long-term impact.
+        Reorder the chain into the best path from barriers → activism → laws → long-term change.
       </div>
       <div id="chain"></div>
       <div class="actions">
@@ -1627,7 +1843,7 @@ function renderStage7(){
     </div>
 
     <div class="status">
-      <b>Phase 3: Cipher Unlock</b><br>
+      <b>${escapeHTML(phase3Name)}</b><br>
       <div class="mini" style="margin-top:8px;">
         When you have enough letters, type the final unlock word.
       </div>
@@ -1692,13 +1908,13 @@ function renderStage7(){
 
     if(!(hasAA && hasCH && hasWO && hasAI)){
       box.className = "status bad";
-      box.textContent = "Coalition requirement not met: include AA + Chicano/Latino + Women + American Indian (one each).";
+      box.textContent = "Team requirement not met: include AA + Chicano/Latino + Women + American Indian (one each).";
       return;
     }
 
     phase1Done = true;
     box.className = "status good";
-    box.textContent = "Coalition locked. Cross-movement power activated. (+4 letters)";
+    box.textContent = "Team locked. Cross-movement power activated. (+4 letters)";
 
     setLetters([0,1,2,3], ["J","U","S","T"]);
     markTEKS(["9C"]);
@@ -1752,7 +1968,9 @@ function renderStage7(){
     const box = $("#chainStatus");
     if(!ok){
       box.className = "status bad";
-      box.textContent = "Chain not locked. Think: barriers → organizing → media → federal action → legislation → long-term impact.";
+      box.textContent = (DIFFICULTY==="honors")
+        ? "Chain not locked. Think: barriers → organizing → media → federal action → laws → long-term impact."
+        : "Not locked yet. Think: barriers → protests → attention → government action → new laws → long-term change.";
       return;
     }
     phase2Done = true;
@@ -1775,12 +1993,11 @@ function renderStage7(){
 
     const val = ($("#cipherInput").value || "").trim().toUpperCase().replace(/\s+/g,"");
     if(val === HEIST_CIPHER.final){
-      // reveal remaining letters
       setLetters([8,9], ["A","T"]);
       box.className = "status good";
       box.textContent = "Cipher cracked. Door unlocked. You just robbed the status quo.";
       markTEKS(["9I"]);
-      setTimeout(()=>unlockStage(7), 450);
+      setTimeout(()=>unlockStage(7), 420);
     } else {
       box.className = "status bad";
       box.textContent = "Incorrect. Use the letters you earned + the hint. Try again.";
@@ -1790,9 +2007,9 @@ function renderStage7(){
   renderChain();
 }
 
-/* =========================
- * FINAL
- * ========================= */
+/* =========================================================
+   FINAL
+   ========================================================= */
 function renderFinal(){
   const code = ESCAPE_CODES[Math.floor(Math.random()*ESCAPE_CODES.length)];
   $("#stageArea").innerHTML = `
@@ -1816,7 +2033,7 @@ function renderFinal(){
     <div class="status">
       <b>What you just covered (Civil Rights Era TEKS)</b><br>
       <div class="mini" style="margin-top:8px;">
-        You hit: amendments & movement development, Jim Crow/KKK obstacles, organizations across movements, key leaders, Panthers vs MLK, MLK influence, presidential/congressional actions, resistance leaders, movement impacts, Sweatt/Brown, and Great Society/Title IX/affirmative action outcomes.
+        Amendments & movement development • Jim Crow/KKK obstacles • cross-movement organizations • key leaders • Panthers vs MLK • MLK influence • CRA 1964 + VRA 1965 • resistance leaders • movement impacts • Sweatt/Brown • Great Society/Title IX/affirmative action outcomes.
       </div>
     </div>
   `;
@@ -1828,13 +2045,14 @@ function renderFinal(){
   $("#playAgain").addEventListener("click", ()=>$("#resetAll").click());
 }
 
-/** =========================================================
- *  INIT
- *  ========================================================= */
+/* =========================================================
+   INIT
+   ========================================================= */
 window.addEventListener("DOMContentLoaded", () => {
+  updateModeUI();
   renderTEKSTracker();
   updateUI();
-  wireReset();
+  wireControls();
   renderActiveStage(true);
 });
 </script>
