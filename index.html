@@ -557,7 +557,7 @@ const TEKS = [
 
 const ESCAPE_CODES = [
   "DREAM-1963","VOTE-1965","EQUAL-14TH","FREEDOM-RIDES","CIVILRIGHTS-1964","JUSTICE-BROWN54","NONVIOLENCE-SCLC",
-  "SWEATT-TX","TITLEIX-1972","FAIRHOUSING-1968"
+  "SWEATT-TX","TITLEIX-1972","FAIRHOUSING-1968", "NAH-PARKS", "SITINN-LUNCHTIME", "ANYMEANSNECESSARY-MALCOLM"
 ];
 
 const $ = (sel) => document.querySelector(sel);
@@ -591,27 +591,23 @@ function getThresholds(){
 
 /* ---- ROOM 1 TIMELINE EVENTS ---- */
 const TIMELINE_EVENTS_STANDARD = [
-  { id:"pl", year:1896, label:"1896 — Plessy v. Ferguson: makes segregation legal (“separate but equal”)." },
-  { id:"na", year:1909, label:"1909 — NAACP founded: uses courts and organizing to fight segregation." },
-  { id:"sw", year:1946, label:"1946 — Sweatt v. Painter starts Texas challenge to segregated education (helps lead to Brown)." },
-  { id:"bo", year:1954, label:"1954 — Brown v. Board: segregated public schools are unconstitutional." },
-  { id:"mo", year:1955, label:"1955–56 — Montgomery Bus Boycott: mass protest + nonviolent resistance." },
-  { id:"lr", year:1957, label:"1957 — Little Rock Crisis: federal government enforces desegregation against state resistance." },
-  { id:"cr", year:1964, label:"1964 — Civil Rights Act: bans segregation/discrimination in many public places and jobs." },
-  { id:"vr", year:1965, label:"1965 — Voting Rights Act: targets barriers like literacy tests; strengthens enforcement." },
-  { id:"fh", year:1968, label:"1968 — Fair Housing Act: limits housing discrimination (long-term effects on neighborhoods)." },
+  { id:"pl", year:1896, label:"Plessy v. Ferguson: makes segregation legal (“separate but equal”)." },
+  { id:"sw", year:1946, label:"Sweatt v. Painter starts Texas challenge to segregated education (helps lead to Brown)." },
+  { id:"bo", year:1954, label:"Brown v. Board: segregated public schools are unconstitutional." },
+  { id:"lr", year:1957, label:"Little Rock Crisis: federal government enforces desegregation against state resistance." },
+  { id:"cr", year:1964, label:"Civil Rights Act: bans segregation/discrimination in many public places and jobs." },
 ];
 
 const TIMELINE_EVENTS_HONORS = [
-  { id:"pl", year:1896, label:"1896 — Plessy v. Ferguson entrenches 'separate but equal' (legal foundation for segregation)." },
-  { id:"na", year:1909, label:"1909 — NAACP founded (litigation + organizing against segregation)." },
-  { id:"sw", year:1946, label:"1946 — Sweatt v. Painter begins Texas challenge to segregated education (pipeline to Brown)." },
-  { id:"bo", year:1954, label:"1954 — Brown v. Board rules segregated public schools unconstitutional (major turning point)." },
-  { id:"mo", year:1955, label:"1955–56 — Montgomery Bus Boycott (mass action + nonviolent resistance gains power)." },
-  { id:"lr", year:1957, label:"1957 — Little Rock Crisis (federal enforcement meets state resistance)." },
-  { id:"cr", year:1964, label:"1964 — Civil Rights Act outlaws discrimination/segregation in major areas of public life." },
-  { id:"vr", year:1965, label:"1965 — Voting Rights Act targets barriers and expands federal oversight." },
-  { id:"fh", year:1968, label:"1968 — Fair Housing Act (long-term: reshapes housing access and debates)." },
+  { id:"pl", year:1896, label:"Plessy v. Ferguson entrenches 'separate but equal' (legal foundation for segregation)." },
+  { id:"na", year:1909, label:"NAACP founded (litigation + organizing against segregation)." },
+  { id:"sw", year:1946, label:"Sweatt v. Painter begins Texas challenge to segregated education (pipeline to Brown)." },
+  { id:"bo", year:1954, label:"Brown v. Board rules segregated public schools unconstitutional (major turning point)." },
+  { id:"mo", year:1955, label:"Montgomery Bus Boycott (mass action + nonviolent resistance gains power)." },
+  { id:"lr", year:1957, label:"Little Rock Crisis (federal enforcement meets state resistance)." },
+  { id:"cr", year:1964, label:"Civil Rights Act outlaws discrimination/segregation in major areas of public life." },
+  { id:"vr", year:1965, label:"Voting Rights Act targets barriers and expands federal oversight." },
+  { id:"fh", year:1968, label:"Fair Housing Act (long-term: reshapes housing access and debates)." },
 ];
 
 /* ---- ROOM 3 COURT CONTENT ---- */
