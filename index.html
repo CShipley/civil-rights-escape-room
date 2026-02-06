@@ -1096,7 +1096,7 @@ function renderRoom1(){
     }
     const box = $("#r1Status");
 
-    if(score >= 7){
+    if(score === correct.length){
       box.className = "status good";
       box.textContent = `Unlocked! ${score}/${correct.length} positions correct. Door to Room 2 opens.`;
       markTEKS(["9D","9E"]);
