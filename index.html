@@ -218,16 +218,20 @@
     .stageDesc{font-size:12px; margin:4px 0 0; color:rgba(233, 243, 255, .86); line-height:1.25}
 
     /* Stage area card: red glass "room" framing (non-clickable) */
-    .card{
-      border-radius: var(--radius);
-      padding: 16px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.12));
-      backdrop-filter: blur(14px);
-      box-shadow: var(--shadow);
-      position:relative;
-      overflow:hidden;
-    }
+   .card{
+  border-radius: var(--radius);
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: linear-gradient(
+    135deg,
+    rgba(20,20,20,.75),
+    rgba(0,0,0,.55)
+  );
+  backdrop-filter: blur(18px);
+  box-shadow: 0 22px 48px rgba(0,0,0,.65);
+  position:relative;
+  overflow:hidden;
+}
 
     /* Room transition effect */
     .card.roomFade{
