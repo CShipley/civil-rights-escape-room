@@ -16,20 +16,14 @@
       --text: rgba(245,245,245,.92);
       --muted: rgba(245,245,245,.72);
 
-      /* Sapphire glass */
       --sapphA: rgba(40,140,255,.16);
       --sapphB: rgba(40,140,255,.26);
-      --sapphGlow: rgba(80,160,255,.55);
 
-      /* Ruby glass */
       --rubyA: rgba(255,60,60,.14);
       --rubyB: rgba(255,60,60,.24);
-      --rubyGlow: rgba(255,80,80,.52);
 
-      /* Neon green TEKS */
       --teksA: rgba(40,255,120,.12);
       --teksB: rgba(40,255,120,.22);
-      --teksGlow: rgba(40,255,120,.45);
       --teksText: rgba(220,255,235,.92);
 
       --goodA: rgba(40,255,160,.10);
@@ -57,7 +51,6 @@
       overflow-x:hidden;
     }
 
-    /* subtle scanlines */
     body:before{
       content:"";
       position:fixed; inset:0;
@@ -150,7 +143,6 @@
       transition: width .35s ease;
     }
 
-    /* Panels */
     .panel{
       border-radius:18px;
       border:1px solid var(--panelBorder);
@@ -159,7 +151,7 @@
       box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset, 0 18px 45px rgba(0,0,0,.35);
     }
 
-    .sidebar{
+    .sidebar, .teksPanel{
       padding:14px;
       display:flex;
       flex-direction:column;
@@ -201,15 +193,13 @@
         0 16px 35px rgba(0,0,0,.28);
       transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
     }
-    .btn:hover{ filter: brightness(1.10); box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 0 30px rgba(80,160,255,.30), 0 18px 40px rgba(0,0,0,.30); }
+    .btn:hover{ filter: brightness(1.10); }
     .btn:active{ transform: translateY(1px) scale(.99); }
     .btn.primary{
       background: linear-gradient(135deg, rgba(60,160,255,.18), rgba(60,160,255,.30));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset, 0 0 34px rgba(80,160,255,.32), 0 18px 45px rgba(0,0,0,.30);
     }
     .btn.danger{
       background: linear-gradient(135deg, rgba(255,60,60,.16), rgba(255,60,60,.26));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 0 28px rgba(255,80,80,.24), 0 18px 45px rgba(0,0,0,.30);
     }
     .btn.small{ padding:8px 10px; border-radius:14px; font-size:12px; }
 
@@ -250,7 +240,6 @@
     }
     .badge.good{
       background: linear-gradient(135deg, var(--goodA), var(--goodB));
-      box-shadow: 0 0 22px rgba(40,255,160,.16);
       color: rgba(220,255,240,.92);
     }
 
@@ -261,19 +250,12 @@
       gap:12px;
     }
 
-    /* TEKS Tracker panel (RIGHT) */
-    .teksPanel{
-      padding:14px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
     .teksCard{
       border-radius:16px;
       padding:12px 12px;
       border:1px solid rgba(255,255,255,.14);
       background: linear-gradient(135deg, var(--teksA), var(--teksB));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 0 26px rgba(40,255,120,.18);
+      box-shadow: 0 0 26px rgba(40,255,120,.18);
       color: var(--teksText);
       font-size:12.5px;
       line-height:1.35;
@@ -291,7 +273,6 @@
     .teksItem.done{
       background: linear-gradient(135deg, rgba(40,255,120,.10), rgba(40,255,120,.18));
       border-color: rgba(40,255,120,.25);
-      box-shadow: 0 0 18px rgba(40,255,120,.14);
     }
     .teksCode{
       font-family: var(--type);
@@ -310,7 +291,7 @@
       padding:14px 14px;
       border:1px solid rgba(255,255,255,.16);
       background: linear-gradient(135deg, rgba(255,60,60,.10), rgba(255,60,60,.20));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 0 30px rgba(255,80,80,.18);
+      box-shadow: 0 0 30px rgba(255,80,80,.18);
     }
     .roomBanner h3{
       margin:0;
@@ -337,43 +318,21 @@
     }
     .status b{ color:var(--text); }
 
-    .status.good{
-      background: linear-gradient(135deg, var(--goodA), var(--goodB));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset, 0 0 26px rgba(40,255,160,.18);
-      color: rgba(220,255,240,.92);
-    }
-    .status.warn{
-      background: linear-gradient(135deg, var(--warnA), var(--warnB));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset, 0 0 26px rgba(255,210,60,.18);
-      color: rgba(255,248,220,.92);
-    }
-    .status.bad{
-      background: linear-gradient(135deg, var(--badA), var(--badB));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset, 0 0 26px rgba(255,80,80,.20);
-      color: rgba(255,230,230,.92);
-    }
+    .status.good{ background: linear-gradient(135deg, var(--goodA), var(--goodB)); color: rgba(220,255,240,.92); }
+    .status.warn{ background: linear-gradient(135deg, var(--warnA), var(--warnB)); color: rgba(255,248,220,.92); }
+    .status.bad{  background: linear-gradient(135deg, var(--badA), var(--badB));  color: rgba(255,230,230,.92); }
 
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-    }
+    .actions{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
 
-    /* Stage transitions */
     .stageShell{
       position:relative;
       border-radius:18px;
       overflow:hidden;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
-      box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 18px 45px rgba(0,0,0,.35);
+      box-shadow: 0 18px 45px rgba(0,0,0,.35);
     }
-    .stageInner{
-      position:relative;
-      padding:14px;
-      min-height: 540px;
-    }
+    .stageInner{ position:relative; padding:14px; min-height: 540px; }
     .wipe{
       position:absolute; inset:-40px;
       background:
@@ -385,10 +344,7 @@
       pointer-events:none;
     }
     .stageShell.anim .wipe{ animation: wipe 650ms ease both; }
-    @keyframes wipe{
-      0%{ transform: translateX(-110%); }
-      100%{ transform: translateX(110%); }
-    }
+    @keyframes wipe{ 0%{ transform: translateX(-110%);} 100%{ transform: translateX(110%);} }
 
     textarea, input[type="text"], select{
       width:100%;
@@ -403,13 +359,8 @@
     }
     textarea{ min-height: 120px; resize: vertical; }
 
-    .grid2{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
+    .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
 
-    /* Timeline reorder list */
     .eventList{ display:flex; flex-direction:column; gap:10px; }
     .eventItem{
       display:grid;
@@ -424,14 +375,8 @@
     }
     .eventText{ font-size:13px; color: var(--text); line-height:1.35; }
     .moveBtns{ display:flex; gap:8px; }
-    .iconBtn{
-      width:36px; height:36px;
-      display:grid; place-items:center;
-      border-radius:14px;
-      padding:0;
-    }
+    .iconBtn{ width:36px; height:36px; display:grid; place-items:center; border-radius:14px; padding:0; }
 
-    /* Keyword chips */
     .chips{ display:flex; flex-wrap:wrap; gap:8px; }
     .chip{
       display:inline-flex;
@@ -444,22 +389,16 @@
       color: var(--muted);
       cursor:pointer;
       user-select:none;
-      transition: filter .12s ease, transform .08s ease;
+      transition: filter .12s ease;
     }
     .chip:hover{ filter: brightness(1.07); }
     .chip.active{
       background: linear-gradient(135deg, var(--sapphA), var(--sapphB));
       color: rgba(235,248,255,.95);
-      box-shadow: 0 0 20px rgba(80,160,255,.18);
       border-color: rgba(90,160,255,.32);
     }
 
-    /* Drag & drop */
-    .dragGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
+    .dragGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
     .dropZone, .dragBin{
       border-radius:18px;
       padding:12px;
@@ -490,17 +429,17 @@
     .card:active{ cursor:grabbing; }
     .dropZone.over{ outline: 2px solid rgba(80,160,255,.35); outline-offset: 2px; }
 
-    /* Final code display */
     .bigCode{
       font-family: var(--type);
-      letter-spacing: 2px;
-      font-size: 22px;
+      letter-spacing: 1px;
+      font-size: 20px;
       padding:14px 14px;
       text-align:center;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.16);
       background: linear-gradient(135deg, rgba(40,140,255,.10), rgba(255,60,60,.10));
       box-shadow: 0 0 28px rgba(80,160,255,.18);
+      word-break: break-word;
     }
 
     .mini{ font-size: 12px; color: rgba(245,245,245,.72); line-height:1.3; }
@@ -540,7 +479,7 @@
         <div class="descGlass">
           Follow the corridor. Each lock opens the next door.
           <br><br>
-          <b>Rule:</b> You can’t skip ahead. Your brain is the key.
+          <b>Rule:</b> You can’t skip ahead.
         </div>
       </div>
 
@@ -562,7 +501,7 @@
     <aside class="panel teksPanel">
       <h2 class="panelTitle">TEKS Tracker</h2>
       <div class="teksCard">
-        As you complete rooms, you “unlock” the TEKS you practiced. Green = earned.
+        Green = earned (you practiced it in a room).
       </div>
       <div id="teksList"></div>
     </aside>
@@ -570,10 +509,7 @@
 
 <script>
 /* ============================================================
-   IMPORTANT: RESET BEHAVIOR
-   - You said you do NOT want it to “pick up where you left off.”
-   - This file resets progress on EVERY load by using session state
-     and clearing any older saved keys.
+   Reset behavior: page resets each load (no “resume progress”)
 ============================================================ */
 const RESET_EVERY_LOAD = true;
 
@@ -582,7 +518,6 @@ const RESET_EVERY_LOAD = true;
 ========================= */
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-
 function shuffle(arr){
   const a = arr.slice();
   for(let i=a.length-1;i>0;i--){
@@ -599,38 +534,35 @@ function escapeHTML(s){
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
 }
-
-/* =========================
-   Storage: session-only state
-========================= */
-const SS = {
-  get(key, fallback){
-    const v = sessionStorage.getItem(key);
-    return v === null ? fallback : v;
-  },
-  set(key, val){
-    sessionStorage.setItem(key, val);
-  },
-  del(key){
-    sessionStorage.removeItem(key);
-  }
-};
-
-function hardResetStorage(){
-  // session (this run)
-  sessionStorage.clear();
-
-  // wipe older local keys from prior versions, just in case
-  const oldKeys = [
-    "cr_escape_unlocked","cr_escape_room","cr_escape_teks",
-    "cr_r1_events_v2","cr_r2_text","cr_r2_chips","cr_r2_used_starter",
-    "cr_h1","cr_h2","cr_escape_mode"
-  ];
-  oldKeys.forEach(k => localStorage.removeItem(k));
+function normKey(s){
+  return String(s || "")
+    .toLowerCase()
+    .replace(/[\u2010\u2011\u2012\u2013\u2014]/g, "-") // normalize “dash” variants
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 /* =========================
-   Rooms (Pathway)
+   Storage (session for gameplay)
+========================= */
+const SS = {
+  get(key, fallback){ const v = sessionStorage.getItem(key); return v === null ? fallback : v; },
+  set(key, val){ sessionStorage.setItem(key, val); },
+  del(key){ sessionStorage.removeItem(key); }
+};
+function hardResetStorage(){
+  sessionStorage.clear();
+  // wipe older local keys (from earlier versions) so nothing can “stick”
+  [
+    "cr_escape_unlocked","cr_escape_room","cr_escape_teks",
+    "cr_r1_events_v2","cr_r2_text","cr_r2_chips","cr_r2_used_starter",
+    "cr_h1","cr_h2","cr_escape_mode",
+    "cr_code_used_terms"
+  ].forEach(k => localStorage.removeItem(k));
+}
+
+/* =========================
+   Rooms
 ========================= */
 const ROOMS = [
   { id:0, name:"Room 1: Timeline Forge", mini:"Reorder key events into the most accurate sequence." },
@@ -639,11 +571,11 @@ const ROOMS = [
   { id:3, name:"Room 4: Resistance Intel", mini:"Sort resistors and tactics with drag & drop." },
   { id:4, name:"Room 5: The Evidence Wall", mini:"Connect leaders to actions (choices change per leader)." },
   { id:5, name:"Room 6: Great Society Policy Lab", mini:"Match programs to outcomes + long-term impacts." },
-  { id:6, name:"Room 7: The Freedom Path Heist", mini:"Epic final mission: coalition + cause/effect + cipher." }
+  { id:6, name:"Room 7: The Freedom Path Heist", mini:"Final mission: prove mastery across ALL rooms." }
 ];
 
 /* =========================
-   TEKS Tracker definitions (student-facing)
+   TEKS Tracker
 ========================= */
 const TEKS_DEFS = [
   { code:"9D", desc:"Major civil rights events and efforts to end segregation." },
@@ -658,8 +590,7 @@ const TEKS_DEFS = [
 /* =========================
    Content Arrays
 ========================= */
-
-/* ROOM 1: Timeline reorder */
+/* Room 1 */
 const TIMELINE_EVENTS = [
   { id:"e1", text:"Sweatt v. Painter challenges unequal 'separate' education in Texas higher ed." },
   { id:"e2", text:"Brown v. Board rules segregated public schools unconstitutional (turning point)." },
@@ -670,14 +601,14 @@ const TIMELINE_EVENTS = [
 ];
 const TIMELINE_CORRECT_ORDER = ["e1","e2","e3","e4","e5","e6"];
 
-/* ROOM 2: Strategy briefing keywords */
+/* Room 2 */
 const STRATEGY_KEYWORDS = [
   "nonviolent protest", "civil disobedience", "community organizing", "court cases",
   "federal government", "self-defense", "Black Power", "media attention",
   "economic pressure (boycott)", "local vs national strategy"
 ];
 
-/* ROOM 3: Supreme Court dossiers (unique impact IDs) */
+/* Room 3 */
 const COURT_CASES = [
   {
     key:"Brown v. Board",
@@ -759,61 +690,17 @@ const COURT_CASES = [
 ];
 
 const COURT_DOSSIERS_STANDARD = [
-  {
-    id:"d1",
-    dossier:"A school district redraws zones and claims it is 'just about buses.' But the plan makes one school mostly one race and the other school mostly another. Families show that resources and opportunities will likely become unequal over time. The judge must decide if the policy violates equal protection in public education.",
-    think:"schools + equal protection",
-    correctCase:"Brown v. Board",
-    correctImpactId:"br1"
-  },
-  {
-    id:"d2",
-    dossier:"A state creates a separate law school program for minority students only after getting sued. The building is fine, but students do not get the same famous professors, networking, or job connections. The question is whether 'separate' can still be unfair even if the buildings look similar. The court must decide how to measure equality in education.",
-    think:"education + fairness beyond buildings",
-    correctCase:"Sweatt v. Painter",
-    correctImpactId:"sw1"
-  },
-  {
-    id:"d3",
-    dossier:"In a county, Mexican American citizens almost never end up on juries, even though they live there in large numbers. Officials claim discrimination rules only apply to Black and White citizens. Lawyers argue excluding a group from juries is unfair and violates equal protection. The court must decide whether the Constitution protects groups beyond a two-category view of race.",
-    think:"jury selection + discrimination",
-    correctCase:"Hernandez v. Texas",
-    correctImpactId:"he2"
-  },
-  {
-    id:"d4",
-    dossier:"Police break into a home based on a tip and take evidence without a valid warrant. The prosecutor says the evidence is real so it should still be used. The defense argues the search was illegal and courts should not reward unconstitutional behavior. The court must decide if states can use illegally seized evidence in criminal trials.",
-    think:"searches + warrants + evidence",
-    correctCase:"Mapp v. Ohio",
-    correctImpactId:"ma1"
-  },
-  {
-    id:"d5",
-    dossier:"A teen is questioned at a police station for hours and is told, 'Just talk and this will be easier.' The teen is not told the right to remain silent or the right to a lawyer. The confession becomes the main evidence at trial. The court must decide whether warnings are required during interrogation to protect constitutional rights.",
-    think:"questioning + rights warning",
-    correctCase:"Miranda v. Arizona",
-    correctImpactId:"mi1"
-  },
-  {
-    id:"d6",
-    dossier:"A suspect asks to speak with a lawyer, but police keep questioning anyway. Officers pressure the suspect by claiming they have strong evidence. The suspect finally confesses. The court must decide whether denying access to a lawyer during interrogation violates constitutional protections and makes the process unfair.",
-    think:"access to lawyer during questioning",
-    correctCase:"Escobedo v. Illinois",
-    correctImpactId:"es1"
-  },
-  {
-    id:"d7",
-    dossier:"A religious community educates children through eighth grade, then trains them through family and community work programs. The state requires school attendance until age 16. The family argues the law strongly conflicts with their religious practice and way of life. The court must balance religious freedom against state education requirements.",
-    think:"religion vs state rules",
-    correctCase:"Wisconsin v. Yoder",
-    correctImpactId:"yo1"
-  }
+  { id:"d1", dossier:"A school district redraws zones and claims it is 'just about buses.' But the plan makes one school mostly one race and the other school mostly another. Families show that resources and opportunities will likely become unequal over time. The judge must decide if the policy violates equal protection in public education.", think:"schools + equal protection", correctCase:"Brown v. Board", correctImpactId:"br1" },
+  { id:"d2", dossier:"A state creates a separate law school program for minority students only after getting sued. The building is fine, but students do not get the same famous professors, networking, or job connections. The question is whether 'separate' can still be unfair even if the buildings look similar. The court must decide how to measure equality in education.", think:"education + fairness beyond buildings", correctCase:"Sweatt v. Painter", correctImpactId:"sw1" },
+  { id:"d3", dossier:"In a county, Mexican American citizens almost never end up on juries, even though they live there in large numbers. Officials claim discrimination rules only apply to Black and White citizens. Lawyers argue excluding a group from juries is unfair and violates equal protection. The court must decide whether the Constitution protects groups beyond a two-category view of race.", think:"jury selection + discrimination", correctCase:"Hernandez v. Texas", correctImpactId:"he2" },
+  { id:"d4", dossier:"Police break into a home based on a tip and take evidence without a valid warrant. The prosecutor says the evidence is real so it should still be used. The defense argues the search was illegal and courts should not reward unconstitutional behavior. The court must decide if states can use illegally seized evidence in criminal trials.", think:"searches + warrants + evidence", correctCase:"Mapp v. Ohio", correctImpactId:"ma1" },
+  { id:"d5", dossier:"A teen is questioned at a police station for hours and is told, 'Just talk and this will be easier.' The teen is not told the right to remain silent or the right to a lawyer. The confession becomes the main evidence at trial. The court must decide whether warnings are required during interrogation to protect constitutional rights.", think:"questioning + rights warning", correctCase:"Miranda v. Arizona", correctImpactId:"mi1" },
+  { id:"d6", dossier:"A suspect asks to speak with a lawyer, but police keep questioning anyway. Officers pressure the suspect by claiming they have strong evidence. The suspect finally confesses. The court must decide whether denying access to a lawyer during interrogation violates constitutional protections and makes the process unfair.", think:"access to lawyer during questioning", correctCase:"Escobedo v. Illinois", correctImpactId:"es1" },
+  { id:"d7", dossier:"A religious community educates children through eighth grade, then trains them through family and community work programs. The state requires school attendance until age 16. The family argues the law strongly conflicts with their religious practice and way of life. The court must balance religious freedom against state education requirements.", think:"religion vs state rules", correctCase:"Wisconsin v. Yoder", correctImpactId:"yo1" }
 ];
-
-// Honors uses the same dossiers (same correct impact IDs), but options will pull honors impacts for other cases too.
 const COURT_DOSSIERS_HONORS = COURT_DOSSIERS_STANDARD.map(x => ({...x}));
 
-/* ROOM 4: Resistance Intel */
+/* Room 4 */
 const RESISTANCE_CARDS = [
   { id:"r1", text:"Orval Faubus uses the National Guard to block desegregation at Little Rock Central.", correctZone:"State Resistance" },
   { id:"r2", text:"George Wallace runs on segregationist slogans and blocks integration efforts in Alabama.", correctZone:"State Resistance" },
@@ -824,163 +711,88 @@ const RESISTANCE_CARDS = [
 ];
 const RESIST_ZONES = ["State Resistance","Political Resistance","Social/Local Resistance"];
 
-/* ROOM 5: Evidence wall */
+/* Room 5 */
 const LEADER_WALL = [
-  {
-    leader:"Martin Luther King Jr.",
-    prompt:"Choose the best action/role that fits this leader.",
-    options:[
+  { leader:"Martin Luther King Jr.", prompt:"Choose the best action/role that fits this leader.", options:[
       "Led nonviolent direct-action campaigns and helped form a national movement strategy.",
       "Argued cases as a Supreme Court justice to expand civil rights protections.",
       "Organized farmworkers to win union recognition and contracts.",
       "Co-founded NOW and pushed for women’s equality in the workplace."
-    ],
-    correctIndex:0,
-    teks:["9D","9E"]
-  },
-  {
-    leader:"Malcolm X",
-    prompt:"Pick the best description.",
-    options:[
+    ], correctIndex:0, teks:["9D","9E"] },
+  { leader:"Malcolm X", prompt:"Pick the best description.", options:[
       "Promoted Black pride and self-determination; criticized slow change and pushed a stronger tone.",
       "Helped pass the Voting Rights Act by lobbying Congress directly.",
       "Wrote The Feminine Mystique and shaped second-wave feminism.",
       "Led the Montgomery Bus Boycott after refusing to give up a seat."
-    ],
-    correctIndex:0,
-    teks:["9E"]
-  },
-  {
-    leader:"Rosa Parks",
-    prompt:"Pick the best description.",
-    options:[
+    ], correctIndex:0, teks:["9E"] },
+  { leader:"Rosa Parks", prompt:"Pick the best description.", options:[
       "Her arrest helped trigger the Montgomery Bus Boycott and mass organizing.",
       "Created the Black Panther Party and led armed patrols of police.",
       "Argued Hernandez v. Texas to expand equal protection.",
       "Built the Great Society and created Medicare."
-    ],
-    correctIndex:0,
-    teks:["9D","9E"]
-  },
-  {
-    leader:"Betty Friedan",
-    prompt:"Pick the best description.",
-    options:[
+    ], correctIndex:0, teks:["9D","9E"] },
+  { leader:"Betty Friedan", prompt:"Pick the best description.", options:[
       "Wrote The Feminine Mystique and helped launch modern women’s rights activism.",
       "Led the SCLC and organized sit-ins across the South.",
       "Created the UFW and organized the Delano Grape Strike.",
       "Governor of Arkansas who blocked Little Rock Central High School."
-    ],
-    correctIndex:0,
-    teks:["9F"]
-  },
-  {
-    leader:"Cesar Chavez & Dolores Huerta",
-    prompt:"Pick the best description.",
-    options:[
+    ], correctIndex:0, teks:["9F"] },
+  { leader:"Cesar Chavez & Dolores Huerta", prompt:"Pick the best description.", options:[
       "Organized farmworkers; used strikes/boycotts to improve wages and working conditions.",
       "Supreme Court case that required Miranda warnings.",
       "Governor who promised 'segregation forever'.",
       "Created the Civil Rights Act of 1964 in Congress."
-    ],
-    correctIndex:0,
-    teks:["9G"]
-  },
-  {
-    leader:"Thurgood Marshall",
-    prompt:"Pick the best description.",
-    options:[
+    ], correctIndex:0, teks:["9G"] },
+  { leader:"Thurgood Marshall", prompt:"Pick the best description.", options:[
       "NAACP lawyer who fought segregation in court; later became a Supreme Court justice.",
       "Led armed self-defense groups in Oakland as part of the Black Panther Party.",
       "Wrote the Voting Rights Act and signed it as president.",
       "Organized Freedom Rides as a student activist group leader."
-    ],
-    correctIndex:0,
-    teks:["9D","9I"]
-  }
+    ], correctIndex:0, teks:["9D","9I"] }
 ];
 
-/* ROOM 6: Great Society Policy Lab */
+/* Room 6 */
 const GREAT_SOCIETY = [
-  {
-    id:"g1",
-    scenario:"A family can’t afford health insurance. An elderly grandparent needs hospital care and medicine, and costs are crushing the household budget.",
+  { id:"g1", scenario:"A family can’t afford health insurance. An elderly grandparent needs hospital care and medicine, and costs are crushing the household budget.",
     choices:[
-      { key:"Medicare/Medicaid", ok:true, why:"Expanded healthcare coverage for elderly and low-income Americans; long-term: major pillar of U.S. social safety net." },
-      { key:"HUD Act", ok:false, why:"Housing support, not health insurance coverage." },
-      { key:"Voting Rights Act", ok:false, why:"Voting protections, not healthcare." }
-    ],
-    teks:["9H"]
-  },
-  {
-    id:"g2",
-    scenario:"A neighborhood has overcrowded schools and outdated books. Students fall behind and fewer graduate ready for jobs or college.",
+      { key:"Medicare/Medicaid", ok:true },
+      { key:"HUD Act", ok:false },
+      { key:"Voting Rights Act", ok:false }
+    ], teks:["9H"] },
+  { id:"g2", scenario:"A neighborhood has overcrowded schools and outdated books. Students fall behind and fewer graduate ready for jobs or college.",
     choices:[
-      { key:"Federal aid to education", ok:true, why:"Great Society expanded federal support for schools; long-term: increased federal role in education equity debates." },
-      { key:"Mapp v. Ohio", ok:false, why:"Court case about evidence, not school funding." },
-      { key:"UFW", ok:false, why:"Labor union for farmworkers, not education funding." }
-    ],
-    teks:["9H"]
-  },
-  {
-    id:"g3",
-    scenario:"A growing city has rising homelessness and unsafe housing. Families can work but can’t find affordable places to live near jobs.",
+      { key:"Federal aid to education", ok:true },
+      { key:"Mapp v. Ohio", ok:false },
+      { key:"UFW", ok:false }
+    ], teks:["9H"] },
+  { id:"g3", scenario:"A growing city has rising homelessness and unsafe housing. Families can work but can’t find affordable places to live near jobs.",
     choices:[
-      { key:"Housing & Urban Development Act (HUD)", ok:true, why:"Expanded housing subsidies and grants; long-term: shaped modern federal housing policy and debates over urban poverty." },
-      { key:"Miranda v. Arizona", ok:false, why:"Interrogation rights, not housing." },
-      { key:"Civil Rights Act of 1964", ok:false, why:"Anti-discrimination law, but the direct housing program answer is HUD." }
-    ],
-    teks:["9H"]
-  },
-  {
-    id:"g4",
-    scenario:"A community has persistent hunger. Some families work multiple jobs, but grocery costs still outpace income. Students arrive at school unable to focus.",
+      { key:"Housing & Urban Development Act (HUD)", ok:true },
+      { key:"Miranda v. Arizona", ok:false },
+      { key:"Civil Rights Act of 1964", ok:false }
+    ], teks:["9H"] },
+  { id:"g4", scenario:"A community has persistent hunger. Some families work multiple jobs, but grocery costs still outpace income. Students arrive at school unable to focus.",
     choices:[
-      { key:"Food Stamp Act", ok:true, why:"Expanded access to food assistance; long-term: ongoing national debate about poverty policy and public support programs." },
-      { key:"Freedom Rides", ok:false, why:"Civil rights protest tactic, not a poverty program." },
-      { key:"Brown v. Board", ok:false, why:"School desegregation case." }
-    ],
-    teks:["9H"]
-  }
-];
-
-/* ROOM 7: Final “Heist” */
-const HEIST_STEPS = [
-  {
-    id:"h1",
-    title:"Build the Coalition Map",
-    prompt:"Pick 3 movement tools that work together to create change (you need all 3 types: legal, protest, and legislation).",
-    options:[
-      {k:"Court cases (NAACP legal strategy)", tag:"legal"},
-      {k:"Boycotts / sit-ins / marches", tag:"protest"},
-      {k:"Civil Rights Act / Voting Rights Act", tag:"law"},
-      {k:"Only one leader gives a speech and everything changes", tag:"wrong"},
-      {k:"Ignore the federal government entirely", tag:"wrong"}
-    ],
-    correctTags:["legal","protest","law"]
-  },
-  {
-    id:"h2",
-    title:"Cause → Action → Response → Long-term Change",
-    prompt:"Choose the best chain that matches how the movement often worked.",
-    options:[
-      {k:"Unfair law → peaceful protest → media attention + pressure → new federal law → broader rights over time", ok:true},
-      {k:"Unfair law → violence only → no courts → no long-term impact", ok:false},
-      {k:"Problem disappears → nobody acts → Congress passes laws anyway", ok:false}
-    ]
-  },
-  {
-    id:"h3",
-    title:"Cipher Door",
-    prompt:"Final lock: generate the 4-letter code you earn from your pathway performance.",
-    note:"You’ll generate it below once you’ve done the heist steps."
-  }
+      { key:"Food Stamp Act", ok:true },
+      { key:"Freedom Rides", ok:false },
+      { key:"Brown v. Board", ok:false }
+    ], teks:["9H"] }
 ];
 
 /* =========================
-   Game State (session)
+   NEW: Final Code pool (no repeats until all used once)
 ========================= */
-let DIFFICULTY = localStorage.getItem("cr_escape_mode") || "standard"; // OK to persist
+const CODE_TERMS = [
+  "BOYCOTT","SIT-IN","FREEDOM","JUSTICE","MARCH","PROTEST","LIBERTY","EQUALITY","VOTE","BALLOT","DIGNITY",
+  "NONVIOLENCE","INTEGRATION","DESEGREGATE","AMENDMENT","ACTIVIST","SPEECH","DREAM","SCLC","NAACP","SNCC","CORE",
+  "SELMA","MONTGOMERY","BIRMINGHAM","LITTLE-ROCK","MEMPHIS","GREENSBORO","ALBANY","JACKSON","PETTUS-BRIDGE",
+  "LORRAINE-MOTEL","EBENEZER-CHURCH","DEXTER-AVENUE","CITIZENSHIP","COURAGE","UNITE","REFORM","VALOR","OVERCOME"
+];
+
+/* =========================
+   Game State
+========================= */
+let DIFFICULTY = localStorage.getItem("cr_escape_mode") || "standard";
 let unlocked = JSON.parse(SS.get("cr_escape_unlocked", "[false,false,false,false,false,false,false]"));
 let currentRoom = parseInt(SS.get("cr_escape_room", "0"), 10);
 let teksCovered = JSON.parse(SS.get("cr_escape_teks", "[]"));
@@ -991,7 +803,6 @@ function saveState(){
   SS.set("cr_escape_room", String(currentRoom));
   SS.set("cr_escape_teks", JSON.stringify(teksCovered));
 }
-
 function markTEKS(list){
   for(const t of list){
     if(!teksCovered.includes(t)) teksCovered.push(t);
@@ -999,7 +810,6 @@ function markTEKS(list){
   saveState();
   renderTEKS();
 }
-
 function locksOpenedCount(){ return unlocked.filter(Boolean).length; }
 
 function animateStage(){
@@ -1008,15 +818,13 @@ function animateStage(){
   void shell.offsetWidth;
   shell.classList.add("anim");
 }
-
 function setRoom(id){
-  if(id > 0 && !unlocked[id-1]) return; // no skipping
+  if(id > 0 && !unlocked[id-1]) return;
   currentRoom = id;
   saveState();
   animateStage();
   render();
 }
-
 function unlockRoom(id){
   unlocked[id] = true;
   saveState();
@@ -1024,7 +832,15 @@ function unlockRoom(id){
   updateHeader();
   renderTEKS();
 }
-
+function unlockNext(roomId){
+  unlockRoom(roomId);
+  if(roomId+1 < 7){
+    currentRoom = roomId+1;
+    saveState();
+    animateStage();
+    render();
+  }
+}
 function resetAll(){
   unlocked = [false,false,false,false,false,false,false];
   currentRoom = 0;
@@ -1035,7 +851,7 @@ function resetAll(){
 }
 
 /* =========================
-   Rendering: Sidebar/Header/TEKS
+   Rendering: sidebar/header/teks
 ========================= */
 function renderSidebar(){
   const list = $("#roomList");
@@ -1058,14 +874,12 @@ function renderSidebar(){
     list.appendChild(div);
   });
 }
-
 function updateHeader(){
   $("#pillRoom").textContent = `Room ${currentRoom+1}`;
   $("#pillLocks").textContent = `${locksOpenedCount()} / 7`;
   $("#pillMode").textContent = (DIFFICULTY==="honors" ? "Honors" : "Standard");
   $("#progressBar").style.width = `${(locksOpenedCount()/7)*100}%`;
 }
-
 function renderTEKS(){
   const box = $("#teksList");
   if(!box) return;
@@ -1081,7 +895,6 @@ function renderTEKS(){
     box.appendChild(div);
   });
 }
-
 function render(){
   renderSidebar();
   updateHeader();
@@ -1096,21 +909,10 @@ function render(){
   if(currentRoom===6) renderRoom7();
 }
 
-function unlockNext(roomId){
-  unlockRoom(roomId);
-  if(roomId+1 < 7){
-    currentRoom = roomId+1;
-    saveState();
-    animateStage();
-    render();
-  }
-}
-
 /* =========================
-   ROOM 1: Timeline Forge
+   ROOM 1
 ========================= */
 function renderRoom1(){
-  // session-only order (resets each load anyway)
   const key = "cr_r1_events_v2";
   const events = JSON.parse(SS.get(key, "null")) || shuffle(TIMELINE_EVENTS);
   SS.set(key, JSON.stringify(events));
@@ -1118,12 +920,10 @@ function renderRoom1(){
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
       <h3>Room 1: Timeline Forge</h3>
-      <p><b>Instructions:</b> Put the events in the correct order. Use ▲ ▼ to move events. When you think it’s right, click <b>Check Timeline</b>.</p>
+      <p><b>Instructions:</b> Put the events in the correct order. Use ▲ ▼ to move events. Then click <b>Check Timeline</b>.</p>
     </div>
 
-    <div class="status warn">
-      <b>Hint:</b> Think <b>court/strategy</b> → <b>major actions</b> → <b>big federal laws</b>.
-    </div>
+    <div class="status warn"><b>Hint:</b> Court/strategy building before the biggest federal laws.</div>
 
     <div class="eventList" id="eventList"></div>
 
@@ -1171,38 +971,33 @@ function renderRoom1(){
 
   $("#checkR1").addEventListener("click", () => {
     const current = events.map(e => e.id);
-    const correct = TIMELINE_CORRECT_ORDER;
     let score = 0;
-    for(let i=0;i<correct.length;i++){
-      if(current[i]===correct[i]) score++;
+    for(let i=0;i<TIMELINE_CORRECT_ORDER.length;i++){
+      if(current[i]===TIMELINE_CORRECT_ORDER[i]) score++;
     }
     const box = $("#r1Status");
-    if(score === correct.length){
+    if(score === TIMELINE_CORRECT_ORDER.length){
       box.className = "status good";
-      box.textContent = `Unlocked! ${score}/${correct.length} correct. Door to Room 2 opens.`;
+      box.textContent = `Unlocked! ${score}/${TIMELINE_CORRECT_ORDER.length} correct. Door to Room 2 opens.`;
       markTEKS(["9D","9E"]);
       unlockRoom(0);
       setTimeout(()=>unlockNext(0), 380);
     } else {
       box.className = "status bad";
-      box.textContent = `Not yet. ${score}/${correct.length} in the right spot. Try putting court building before big federal laws.`;
+      box.textContent = `Not yet. ${score}/${TIMELINE_CORRECT_ORDER.length} in the right spot.`;
     }
   });
 
   if(unlocked[0]){
-    $("#r1Status").className = "status good";
-    $("#r1Status").textContent = "Door already unlocked. You can still practice if you want.";
+    $("#r1Status").className="status good";
+    $("#r1Status").textContent="Door already unlocked. You can still practice.";
   }
 }
 
 /* =========================
-   ROOM 2: Strategy Briefing (PATCHED)
-   - Starter does NOT unlock
-   - Starter does NOT permanently block
-   - Only blocks if student leaves starter basically unchanged
+   ROOM 2 (starter safeguard)
 ========================= */
 function renderRoom2(){
-  // Starter text (used only to detect copy/paste)
   const R2_STARTER_TEXT =
 `The SCLC focused on nonviolent protest, civil disobedience, and large marches to change laws and public opinion. It worked through churches and community organizing, and it tried to pressure the federal government to act. The Black Panther Party had a more militant tone and emphasized self-defense and local control, while also creating community programs like food and health support. Both influenced the movement: the SCLC helped win major civil rights laws, and the Panthers pushed conversations about power, policing, and economic justice.`;
 
@@ -1211,27 +1006,27 @@ function renderRoom2(){
       <h3>Room 2: Strategy Briefing</h3>
       <p>
         <b>Instructions:</b> In <b>4–7 sentences</b>, compare <b>SCLC</b> and the <b>Black Panther Party</b>.
-        Then select <b>at least 4 keyword chips</b> that match what you wrote.
-        <br><b>Important:</b> The sentence starter is a scaffold. <b>You must rewrite it in your own words.</b>
+        Pick <b>at least 4</b> keywords that match what you wrote.
+        <br><b>Starter:</b> You can insert a scaffold, but you must rewrite it in your own words.
       </p>
     </div>
 
     <div class="grid2">
       <div class="status">
-        <b>Include these ideas:</b>
+        <b>Include:</b>
         <ul>
           <li>How each group tried to create change</li>
           <li>How each group viewed power/protection</li>
-          <li>How both shaped the movement overall</li>
+          <li>How both shaped the movement</li>
         </ul>
       </div>
       <div class="status warn">
         <b>Unlock rule:</b>
         <ol style="margin:8px 0 0 18px;">
-          <li>Write at least <b>4 sentences</b>.</li>
-          <li>Select at least <b>4 keywords</b> that match your writing.</li>
-          <li>Mention <b>both</b> groups clearly.</li>
-          <li>If you used the starter, you must <b>change it noticeably</b> (add examples / rewrite wording).</li>
+          <li>At least <b>4 sentences</b></li>
+          <li>At least <b>4 keywords</b></li>
+          <li>Mention <b>both groups</b></li>
+          <li>If you used the starter, you must <b>change it noticeably</b></li>
         </ol>
       </div>
     </div>
@@ -1258,7 +1053,6 @@ function renderRoom2(){
   const chipsKey = "cr_r2_chips";
   const usedKey  = "cr_r2_used_starter";
 
-  // restore
   $("#r2Text").value = SS.get(textKey, "");
 
   const chosen = new Set(JSON.parse(SS.get(chipsKey,"[]")));
@@ -1275,12 +1069,9 @@ function renderRoom2(){
     chipWrap.appendChild(c);
   });
 
-  $("#r2Text").addEventListener("input", () => {
-    SS.set(textKey, $("#r2Text").value);
-  });
+  $("#r2Text").addEventListener("input", () => SS.set(textKey, $("#r2Text").value));
 
   $("#r2Auto").addEventListener("click", () => {
-    // mark that starter was used (but do NOT permanently block)
     SS.set(usedKey, "1");
     $("#r2Text").value = R2_STARTER_TEXT;
     SS.set(textKey, R2_STARTER_TEXT);
@@ -1293,13 +1084,13 @@ function renderRoom2(){
     const box = $("#r2Status");
 
     if(sentences < 4){
-      box.className = "status bad";
-      box.textContent = `Not yet: You have about ${sentences} sentence(s). Write at least 4.`;
+      box.className="status bad";
+      box.textContent=`Not yet: you have about ${sentences} sentence(s). Write at least 4.`;
       return;
     }
     if(selected.length < 4){
-      box.className = "status bad";
-      box.textContent = `Not yet: You selected ${selected.length} keyword(s). Pick at least 4 that match your writing.`;
+      box.className="status bad";
+      box.textContent=`Not yet: you selected ${selected.length} keyword(s). Pick at least 4.`;
       return;
     }
 
@@ -1307,54 +1098,47 @@ function renderRoom2(){
     const hasSclc = (lower.includes("sclc") || lower.includes("king") || lower.includes("church") || lower.includes("nonviolent"));
     const hasPan  = (lower.includes("panther") || lower.includes("black power") || lower.includes("self-defense") || lower.includes("police"));
     if(!hasSclc || !hasPan){
-      box.className = "status bad";
-      box.textContent = "Almost! Make sure you clearly mention BOTH groups (SCLC and Black Panthers).";
+      box.className="status bad";
+      box.textContent="Almost! Clearly mention BOTH groups (SCLC and Black Panthers).";
       return;
     }
 
-    // PATCH: starter safeguard that will NOT get “stuck”
-    const usedStarter = SS.get(usedKey, "0") === "1";
+    const usedStarter = SS.get(usedKey,"0")==="1";
     if(usedStarter){
       const norm = (s)=>s.replace(/\s+/g," ").trim();
-      const textNorm = norm(text);
-      const starterNorm = norm(R2_STARTER_TEXT);
-
-      const identical = (textNorm === starterNorm);
-      const containsFullStarter = textNorm.includes(starterNorm);
-
-      // If they kept the starter basically unchanged, block. Otherwise allow.
-      if(identical || containsFullStarter){
-        box.className = "status bad";
-        box.textContent = "Not yet: The starter is only a scaffold. Rewrite it in your own words (change wording and add 1–2 specific examples).";
+      const tN = norm(text);
+      const sN = norm(R2_STARTER_TEXT);
+      if(tN===sN || tN.includes(sN)){
+        box.className="status bad";
+        box.textContent="Not yet: The starter is a scaffold. Rewrite it in your own words and add a specific example.";
         return;
       }
     }
 
-    box.className = "status good";
-    box.textContent = "Unlocked! Door to Room 3 opens.";
+    box.className="status good";
+    box.textContent="Unlocked! Door to Room 3 opens.";
     markTEKS(["9E"]);
     unlockRoom(1);
     setTimeout(()=>unlockNext(1), 420);
   });
 
   if(!unlocked[0]){
-    $("#r2Status").className = "status bad";
-    $("#r2Status").textContent = "Room 2 is locked until Room 1 is opened.";
+    $("#r2Status").className="status bad";
+    $("#r2Status").textContent="Room 2 is locked until Room 1 is opened.";
   }
   if(unlocked[1]){
-    $("#r2Status").className = "status good";
-    $("#r2Status").textContent = "Door already unlocked. You can refine your comparison if you want.";
+    $("#r2Status").className="status good";
+    $("#r2Status").textContent="Door already unlocked. You can refine your comparison if you want.";
   }
 }
 
 /* =========================
-   ROOM 3: Supreme Court Dossiers (Honors works)
+   ROOM 3
 ========================= */
 function renderRoom3(){
   const cases = COURT_CASES.map(c => c.key);
   const dossiers = (DIFFICULTY === "honors") ? COURT_DOSSIERS_HONORS : COURT_DOSSIERS_STANDARD;
 
-  // Flatten impacts with ids + caseKey
   const allImpacts = [];
   for(const c of COURT_CASES){
     const arr = (DIFFICULTY==="honors") ? c.impactsHonors : c.impactsStandard;
@@ -1362,8 +1146,7 @@ function renderRoom3(){
   }
 
   function impactOptionsForDossier(d){
-    const correct = allImpacts.find(x => x.id === d.correctImpactId)
-      || allImpacts.find(x => x.caseKey === d.correctCase); // fallback safety
+    const correct = allImpacts.find(x => x.id === d.correctImpactId);
     const distractors = shuffle(allImpacts.filter(x => x.caseKey !== d.correctCase)).slice(0,3);
     return shuffle([correct, ...distractors]);
   }
@@ -1371,16 +1154,10 @@ function renderRoom3(){
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
       <h3>Room 3: Supreme Court Dossiers</h3>
-      <p>
-        <b>Instructions:</b> For each dossier, choose the best <b>case</b> AND the best <b>long-term impact</b>.
-        <br>There is <b>one clear correct impact</b> per dossier (the others are distractors).
-        ${DIFFICULTY==="honors" ? "<br><b>Honors:</b> the impact options come from the Honors impact list." : ""}
-      </p>
+      <p><b>Instructions:</b> For each dossier, choose the best <b>case</b> AND the best <b>long-term impact</b>. Then click <b>Check</b>.</p>
     </div>
 
-    <div class="status warn">
-      <b>Unlock rule:</b> Get <b>6 of 7</b> dossiers fully correct.
-    </div>
+    <div class="status warn"><b>Unlock rule:</b> 6 of 7 dossiers fully correct.</div>
 
     <div id="dossiers"></div>
 
@@ -1390,8 +1167,7 @@ function renderRoom3(){
     </div>
 
     <div class="status" id="s3Hint" style="display:none;">
-      <b>General hint:</b><br>
-      Schools (Sweatt/Brown) • Jury fairness (Hernandez) • Searches/warrants/evidence (Mapp) • Rights warnings (Miranda) • Access to lawyer (Escobedo) • Religion vs state rules (Yoder)
+      <b>Hint:</b> Schools (Sweatt/Brown) • Jury fairness (Hernandez) • Searches/evidence (Mapp) • Warnings (Miranda) • Lawyer access (Escobedo) • Religion vs state rules (Yoder)
     </div>
 
     <div class="status" id="s3Status">Answer every dossier, then check.</div>
@@ -1451,47 +1227,51 @@ function renderRoom3(){
 
     const box = $("#s3Status");
     if(answered < dossiers.length){
-      box.className = "status bad";
-      box.textContent = "Answer every dossier (case + impact) before checking.";
+      box.className="status bad";
+      box.textContent="Answer every dossier (case + impact) before checking.";
       return;
     }
-
     if(correct >= 6){
-      box.className = "status good";
-      box.textContent = `Unlocked! ${correct}/7 dossiers correct. Door to Room 4 opens.`;
+      box.className="status good";
+      box.textContent=`Unlocked! ${correct}/7 correct. Door to Room 4 opens.`;
       markTEKS(["9I","9J"]);
       unlockRoom(2);
       setTimeout(()=>unlockNext(2), 420);
-    } else {
-      box.className = "status bad";
-      box.textContent = `Not yet. You got ${correct}/7. Use the “Think about” line to focus on the main issue in each dossier.`;
+    }else{
+      box.className="status bad";
+      box.textContent=`Not yet. ${correct}/7.`;
     }
   });
 
   if(!unlocked[1]){
-    $("#s3Status").className = "status bad";
-    $("#s3Status").textContent = "Room 3 is locked until Room 2 is opened.";
+    $("#s3Status").className="status bad";
+    $("#s3Status").textContent="Room 3 is locked until Room 2 is opened.";
   }
   if(unlocked[2]){
-    $("#s3Status").className = "status good";
-    $("#s3Status").textContent = "Door already unlocked. You can still practice the dossiers if you want.";
+    $("#s3Status").className="status good";
+    $("#s3Status").textContent="Door already unlocked. You can still practice.";
   }
 }
 
 /* =========================
-   ROOM 4: Resistance Intel
+   ROOM 4 (FIXED for Honors counting)
+   - The bug you described is almost always a string mismatch.
+   - This check now normalizes BOTH sides (case, spaces, dash variants).
+   - Honors rule is harder: 6/6 required.
 ========================= */
 function renderRoom4(){
   const cards = shuffle(RESISTANCE_CARDS);
 
+  const need = (DIFFICULTY==="honors") ? 6 : 5;
+
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
       <h3>Room 4: Resistance Intel</h3>
-      <p><b>Instructions:</b> Drag each card into the best category. Then click <b>Check</b>.</p>
+      <p><b>Instructions:</b> Drag each intel card into the best category. Then click <b>Check</b>.</p>
     </div>
 
     <div class="status warn">
-      <b>Unlock rule:</b> Place at least <b>5 of 6</b> cards correctly.
+      <b>Unlock rule:</b> ${DIFFICULTY==="honors" ? "<b>Honors:</b> " : ""}Place at least <b>${need} of 6</b> cards correctly.
     </div>
 
     <div class="dragGrid">
@@ -1514,7 +1294,7 @@ function renderRoom4(){
       <button class="btn primary" id="r4Check">Open Door to Room 5</button>
     </div>
 
-    <div class="status" id="r4Status">Drag cards into zones, then check.</div>
+    <div class="status" id="r4Status">Drag all cards into zones, then check.</div>
   `;
 
   const dragBin = $("#dragBin");
@@ -1530,7 +1310,6 @@ function renderRoom4(){
     d.addEventListener("dragstart", (ev) => ev.dataTransfer.setData("text/plain", c.id));
     return d;
   }
-
   cards.forEach(c => dragBin.appendChild(makeCard(c)));
 
   zones.forEach(z => {
@@ -1554,53 +1333,51 @@ function renderRoom4(){
       const zoneName = z.dataset.zone;
       z.querySelectorAll(".card").forEach(card => {
         total++;
-        if(card.dataset.correct === zoneName) correct++;
+        // FIX: normalize both strings so Honors never “counts zero”
+        if(normKey(card.dataset.correct) === normKey(zoneName)) correct++;
       });
     });
 
     const box = $("#r4Status");
     if(total < cards.length){
-      box.className = "status bad";
-      box.textContent = "Place all 6 cards into zones before checking.";
+      box.className="status bad";
+      box.textContent="Place all 6 cards into zones before checking.";
       return;
     }
 
-    if(correct >= 5){
-      box.className = "status good";
-      box.textContent = `Unlocked! ${correct}/6 correct. Door to Room 5 opens.`;
+    if(correct >= need){
+      box.className="status good";
+      box.textContent=`Unlocked! ${correct}/6 correct. Door to Room 5 opens.`;
       markTEKS(["9D","9E"]);
       unlockRoom(3);
       setTimeout(()=>unlockNext(3), 420);
     } else {
-      box.className = "status bad";
-      box.textContent = `Not yet. ${correct}/6 correct. Hint: Congress vs governor vs local intimidation are different levels.`;
+      box.className="status bad";
+      box.textContent=`Not yet. ${correct}/6 correct.`;
     }
   });
 
   if(!unlocked[2]){
-    $("#r4Status").className = "status bad";
-    $("#r4Status").textContent = "Room 4 is locked until Room 3 is opened.";
+    $("#r4Status").className="status bad";
+    $("#r4Status").textContent="Room 4 is locked until Room 3 is opened.";
   }
   if(unlocked[3]){
-    $("#r4Status").className = "status good";
-    $("#r4Status").textContent = "Door already unlocked. You can still practice.";
+    $("#r4Status").className="status good";
+    $("#r4Status").textContent="Door already unlocked. You can still practice.";
   }
 }
 
 /* =========================
-   ROOM 5: Evidence Wall
+   ROOM 5
 ========================= */
 function renderRoom5(){
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
       <h3>Room 5: The Evidence Wall</h3>
-      <p><b>Instructions:</b> Answer each leader file. Options change per leader. Then click <b>Check</b>.</p>
+      <p><b>Instructions:</b> Answer each leader file. Then click <b>Check</b>.</p>
     </div>
 
-    <div class="status warn">
-      <b>Unlock rule:</b> Get at least <b>5 of 6</b> correct.
-    </div>
-
+    <div class="status warn"><b>Unlock rule:</b> 5 of 6 correct.</div>
     <div id="wall"></div>
 
     <div class="actions">
@@ -1642,7 +1419,6 @@ function renderRoom5(){
       box.textContent="Answer all 6 leader files before checking.";
       return;
     }
-
     if(correct >= 5){
       box.className="status good";
       box.textContent=`Unlocked! ${correct}/6 correct. Door to Room 6 opens.`;
@@ -1651,33 +1427,31 @@ function renderRoom5(){
       setTimeout(()=>unlockNext(4), 420);
     } else {
       box.className="status bad";
-      box.textContent=`Not yet. ${correct}/6 correct. Hint: separate protest leadership, legal strategy, and labor organizing.`;
+      box.textContent=`Not yet. ${correct}/6 correct.`;
     }
   });
 
   if(!unlocked[3]){
-    $("#r5Status").className = "status bad";
-    $("#r5Status").textContent = "Room 5 is locked until Room 4 is opened.";
+    $("#r5Status").className="status bad";
+    $("#r5Status").textContent="Room 5 is locked until Room 4 is opened.";
   }
   if(unlocked[4]){
-    $("#r5Status").className = "status good";
-    $("#r5Status").textContent = "Door already unlocked. You can still practice.";
+    $("#r5Status").className="status good";
+    $("#r5Status").textContent="Door already unlocked. You can still practice.";
   }
 }
 
 /* =========================
-   ROOM 6: Great Society Policy Lab
+   ROOM 6
 ========================= */
 function renderRoom6(){
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
       <h3>Room 6: Great Society Policy Lab</h3>
-      <p><b>Instructions:</b> For each scenario, choose the best program and write one sentence explaining a long-term impact. Then click <b>Check</b>.</p>
+      <p><b>Instructions:</b> Choose the best program for each scenario and write one sentence describing a long-term impact. Then click <b>Check</b>.</p>
     </div>
 
-    <div class="status warn">
-      <b>Unlock rule:</b> Get <b>3 of 4</b> correct (and write impact sentences).
-    </div>
+    <div class="status warn"><b>Unlock rule:</b> 3 of 4 correct (with impact sentences).</div>
 
     <div id="gs"></div>
 
@@ -1702,10 +1476,8 @@ function renderRoom6(){
           ${g.choices.map(c => `<option value="${escapeHTML(c.key)}">${escapeHTML(c.key)}</option>`).join("")}
         </select>
       </div>
-      <div class="mini" style="margin-top:10px;">
-        <b>In one sentence:</b> What is a long-term impact?
-      </div>
-      <input type="text" id="gsExplain_${g.id}" placeholder="Example: Medicare became a long-term safety net and expanded the federal role in healthcare." />
+      <div class="mini" style="margin-top:10px;"><b>One sentence long-term impact:</b></div>
+      <input type="text" id="gsExplain_${g.id}" placeholder="Example: This program expanded the federal role and became a long-term safety net." />
     `;
     gs.appendChild(block);
   });
@@ -1726,19 +1498,18 @@ function renderRoom6(){
     const box = $("#r6Status");
     if(answered < GREAT_SOCIETY.length){
       box.className="status bad";
-      box.textContent="Answer every scenario AND write one-sentence impacts before checking.";
+      box.textContent="Answer every scenario AND write impact sentences before checking.";
       return;
     }
-
     if(correct >= 3){
       box.className="status good";
-      box.textContent=`Unlocked! ${correct}/4 correct with impact explanations. Door to Room 7 opens.`;
+      box.textContent=`Unlocked! ${correct}/4 correct. Door to Room 7 opens.`;
       markTEKS(["9H"]);
       unlockRoom(5);
       setTimeout(()=>unlockNext(5), 420);
     } else {
       box.className="status bad";
-      box.textContent=`Not yet. ${correct}/4 correct. Match health/housing/education/hunger and explain lasting effects.`;
+      box.textContent=`Not yet. ${correct}/4 correct.`;
     }
   });
 
@@ -1753,119 +1524,420 @@ function renderRoom6(){
 }
 
 /* =========================
-   ROOM 7: Freedom Path Heist (final)
+   ROOM 7 (UPGRADED: incorporates ALL earlier elements)
+   Must complete each micro-lock correctly to generate code.
 ========================= */
 function renderRoom7(){
+  // Mini timeline (4 items)
+  const MINI_TIMELINE = [
+    { id:"mt1", text:"Brown v. Board (court ruling)" },
+    { id:"mt2", text:"Little Rock Crisis (enforcement vs resistance)" },
+    { id:"mt3", text:"Civil Rights Act of 1964 (major federal law)" },
+    { id:"mt4", text:"Voting Rights Act of 1965 (major federal law)" }
+  ];
+  const MINI_ORDER = ["mt1","mt2","mt3","mt4"];
+
+  // Mini dossier (1)
+  const MINI_DOSSIER = {
+    id:"md1",
+    dossier:"Police search a home without a valid warrant and seize evidence. The question is whether the evidence can be used in state court.",
+    correctCase:"Mapp v. Ohio",
+    correctImpactId:"ma1"
+  };
+
+  // Build impacts list for honors/standard for the mini dossier
+  const impactsAll = [];
+  for(const c of COURT_CASES){
+    const arr = (DIFFICULTY==="honors") ? c.impactsHonors : c.impactsStandard;
+    arr.forEach(o => impactsAll.push({ ...o, caseKey: c.key }));
+  }
+  const miniCorrectImpact = impactsAll.find(x => x.id === MINI_DOSSIER.correctImpactId);
+  const miniDistractors = shuffle(impactsAll.filter(x => x.caseKey !== MINI_DOSSIER.correctCase)).slice(0,3);
+  const miniImpactOptions = shuffle([miniCorrectImpact, ...miniDistractors]);
+
+  // Mini drag-drop (3 cards)
+  const MINI_RESIST = shuffle(RESISTANCE_CARDS).slice(0,3);
+
+  // Mini leader wall (2)
+  const MINI_LEADERS = shuffle(LEADER_WALL).slice(0,2);
+
+  // Mini Great Society (1)
+  const MINI_GS = shuffle(GREAT_SOCIETY).slice(0,1)[0];
+
+  // Strategy lock: pick exactly 3 tags (legal/protest/law)
+  const HEIST_TOOLS = [
+    {k:"Court cases (NAACP legal strategy)", tag:"legal"},
+    {k:"Boycotts / sit-ins / marches", tag:"protest"},
+    {k:"Civil Rights Act / Voting Rights Act", tag:"law"},
+    {k:"Only one leader gives a speech and everything changes", tag:"wrong"},
+    {k:"Ignore the federal government entirely", tag:"wrong"}
+  ];
+
   $("#stageArea").innerHTML = `
     <div class="roomBanner">
-      <h3>Room 7: The Freedom Path Heist</h3>
+      <h3>Room 7: The Freedom Path Heist (Master Lock)</h3>
       <p>
-        <b>Instructions:</b> Complete Steps 1–2 correctly, then generate your <b>Escape Code</b>.
+        <b>Instructions:</b> This final room combines everything.
+        Complete <b>all</b> locks below. Then you can generate your unlock word.
       </p>
     </div>
 
     <div class="status warn">
-      <b>Unlock rule:</b> Step 1 correct + Step 2 correct.
+      <b>Unlock rule:</b> All locks must be correct (Honors is stricter where noted).
     </div>
 
-    <div class="status">
-      <b>Step 1: ${escapeHTML(HEIST_STEPS[0].title)}</b><br>
-      <div class="mini" style="margin-top:8px;">${escapeHTML(HEIST_STEPS[0].prompt)}</div>
-      <div class="chips" id="h1Chips" style="margin-top:10px;"></div>
+    <!-- Lock A: Mini timeline -->
+    <div class="status" id="lockA">
+      <b>Lock A — Mini Timeline</b><br>
+      <div class="mini" style="margin-top:8px;">Reorder these 4 items into the best sequence. Use ▲ ▼, then click “Check Lock A.”</div>
+      <div class="eventList" id="miniTimelineList" style="margin-top:10px;"></div>
+      <div class="actions">
+        <button class="btn small" id="aShuffle">Reshuffle</button>
+        <button class="btn small primary" id="aCheck">Check Lock A</button>
+      </div>
+      <div class="mini" id="aStatus" style="margin-top:8px;">Not checked yet.</div>
     </div>
 
-    <div class="status">
-      <b>Step 2: ${escapeHTML(HEIST_STEPS[1].title)}</b><br>
-      <div class="mini" style="margin-top:8px;">${escapeHTML(HEIST_STEPS[1].prompt)}</div>
+    <!-- Lock B: Strategy toolset -->
+    <div class="status" id="lockB">
+      <b>Lock B — Coalition Tools</b><br>
+      <div class="mini" style="margin-top:8px;">Pick exactly <b>3</b> tools: one legal, one protest, one law.</div>
+      <div class="chips" id="bChips" style="margin-top:10px;"></div>
+      <div class="actions">
+        <button class="btn small primary" id="bCheck">Check Lock B</button>
+      </div>
+      <div class="mini" id="bStatus" style="margin-top:8px;">Not checked yet.</div>
+    </div>
+
+    <!-- Lock C: Mini Supreme Court -->
+    <div class="status" id="lockC">
+      <b>Lock C — Mini Supreme Court Dossier</b><br>
+      <div class="mini" style="margin-top:8px; white-space:pre-line">${escapeHTML(MINI_DOSSIER.dossier)}</div>
+
       <div style="margin-top:10px;">
-        <select id="h2Select">
+        <div class="mini"><b>Best case:</b></div>
+        <select id="cCase">
           <option value="">Select…</option>
-          ${HEIST_STEPS[1].options.map((o,i)=>`<option value="${i}">${escapeHTML(o.k)}</option>`).join("")}
+          ${COURT_CASES.map(c => `<option value="${escapeHTML(c.key)}">${escapeHTML(c.key)}</option>`).join("")}
         </select>
       </div>
+
+      <div style="margin-top:10px;">
+        <div class="mini"><b>Best long-term impact:</b></div>
+        <select id="cImpact">
+          <option value="">Select…</option>
+          ${miniImpactOptions.map(o => `<option value="${o.id}">${escapeHTML(o.text)}</option>`).join("")}
+        </select>
+      </div>
+
+      <div class="actions" style="margin-top:10px;">
+        <button class="btn small primary" id="cCheck">Check Lock C</button>
+      </div>
+      <div class="mini" id="cStatus" style="margin-top:8px;">Not checked yet.</div>
     </div>
 
+    <!-- Lock D: Mini resistance sort -->
+    <div class="status" id="lockD">
+      <b>Lock D — Mini Resistance Sort</b><br>
+      <div class="mini" style="margin-top:8px;">Drag each card into the correct zone (all 3 must be correct).</div>
+
+      <div class="dragGrid" style="margin-top:10px;">
+        <div class="dragBin">
+          <div class="zoneTitle">Cards</div>
+          <div id="dBin"></div>
+        </div>
+        <div>
+          ${RESIST_ZONES.map(z => `
+            <div class="dropZone" data-zone="${escapeHTML(z)}" style="margin-bottom:12px;">
+              <div class="zoneTitle">${escapeHTML(z)}</div>
+              <div class="zoneBody"></div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn small primary" id="dCheck">Check Lock D</button>
+      </div>
+      <div class="mini" id="dStatus" style="margin-top:8px;">Not checked yet.</div>
+    </div>
+
+    <!-- Lock E: Mini leaders -->
+    <div class="status" id="lockE">
+      <b>Lock E — Mini Evidence Wall</b><br>
+      <div class="mini" style="margin-top:8px;">Answer both leader files correctly.</div>
+      <div id="eWall" style="margin-top:10px;"></div>
+      <div class="actions">
+        <button class="btn small primary" id="eCheck">Check Lock E</button>
+      </div>
+      <div class="mini" id="eStatus" style="margin-top:8px;">Not checked yet.</div>
+    </div>
+
+    <!-- Lock F: Mini Great Society -->
+    <div class="status" id="lockF">
+      <b>Lock F — Mini Great Society</b><br>
+      <div class="mini" style="margin-top:8px;">Pick the best program AND write a one-sentence long-term impact.</div>
+
+      <div class="mini" style="margin-top:10px; white-space:pre-line">${escapeHTML(MINI_GS.scenario)}</div>
+
+      <div style="margin-top:10px;">
+        <select id="fSelect">
+          <option value="">Select…</option>
+          ${MINI_GS.choices.map(c => `<option value="${escapeHTML(c.key)}">${escapeHTML(c.key)}</option>`).join("")}
+        </select>
+      </div>
+
+      <div class="mini" style="margin-top:10px;"><b>Long-term impact sentence:</b></div>
+      <input type="text" id="fImpact" placeholder="One sentence (at least ~8 words)." />
+
+      <div class="actions" style="margin-top:10px;">
+        <button class="btn small primary" id="fCheck">Check Lock F</button>
+      </div>
+      <div class="mini" id="fStatus" style="margin-top:8px;">Not checked yet.</div>
+    </div>
+
+    <!-- Final: generate code term -->
     <div class="status">
-      <b>Step 3: ${escapeHTML(HEIST_STEPS[2].title)}</b><br>
-      <div class="mini" style="margin-top:8px;">${escapeHTML(HEIST_STEPS[2].prompt)}</div>
-      <div class="mini" style="margin-top:8px;">${escapeHTML(HEIST_STEPS[2].note)}</div>
+      <b>FINAL DOOR — Generate Unlock Word</b><br>
+      <div class="mini" style="margin-top:8px;">
+        Once all locks A–F are correct, generate your unlock word. It will not repeat until every word in the list has been used once.
+      </div>
 
       <div class="actions" style="margin-top:12px;">
-        <button class="btn primary" id="genCode">Generate Escape Code</button>
+        <button class="btn primary" id="genCode">Generate Unlock Word</button>
         <button class="btn" id="copyCode">Copy</button>
       </div>
 
       <div class="bigCode" id="finalCode" style="margin-top:10px;">----</div>
+      <div class="status" id="hStatus" style="margin-top:12px;">Complete all locks first.</div>
     </div>
-
-    <div class="status" id="hStatus">Finish steps 1–2, then generate your code.</div>
   `;
 
-  // Step 1 chips
-  const chosen = new Set(JSON.parse(SS.get("cr_h1","[]")));
-  const chipWrap = $("#h1Chips");
-  HEIST_STEPS[0].options.forEach(opt => {
-    const c = document.createElement("div");
-    c.className = "chip" + (chosen.has(opt.k) ? " active" : "");
-    c.textContent = opt.k;
-    c.addEventListener("click", () => {
-      if(chosen.has(opt.k)) chosen.delete(opt.k); else chosen.add(opt.k);
-      c.classList.toggle("active");
-      SS.set("cr_h1", JSON.stringify(Array.from(chosen)));
+  // ---------- LOCK A: mini timeline ----------
+  const aKey = "r7_mini_timeline";
+  let aEvents = JSON.parse(SS.get(aKey, "null")) || shuffle(MINI_TIMELINE);
+  SS.set(aKey, JSON.stringify(aEvents));
+
+  const aList = $("#miniTimelineList");
+  function paintA(){
+    aList.innerHTML = "";
+    aEvents.forEach((e, idx) => {
+      const row = document.createElement("div");
+      row.className = "eventItem";
+      row.innerHTML = `
+        <div class="eventText">${escapeHTML(e.text)}</div>
+        <div class="moveBtns">
+          <button class="btn small iconBtn" data-act="up" data-i="${idx}">▲</button>
+          <button class="btn small iconBtn" data-act="down" data-i="${idx}">▼</button>
+        </div>
+      `;
+      aList.appendChild(row);
     });
-    chipWrap.appendChild(c);
+
+    $$("#miniTimelineList button").forEach(b => {
+      b.addEventListener("click", () => {
+        const i = parseInt(b.dataset.i,10);
+        const act = b.dataset.act;
+        if(act==="up" && i>0){ [aEvents[i-1],aEvents[i]] = [aEvents[i],aEvents[i-1]]; }
+        if(act==="down" && i<aEvents.length-1){ [aEvents[i+1],aEvents[i]] = [aEvents[i],aEvents[i+1]]; }
+        SS.set(aKey, JSON.stringify(aEvents));
+        paintA();
+      });
+    });
+  }
+  paintA();
+
+  $("#aShuffle").addEventListener("click", () => {
+    aEvents = shuffle(MINI_TIMELINE);
+    SS.set(aKey, JSON.stringify(aEvents));
+    paintA();
+    $("#aStatus").textContent = "Reshuffled.";
+    SS.set("r7_lockA_ok","0");
   });
 
-  // Step 2 selection
-  $("#h2Select").addEventListener("change", () => SS.set("cr_h2", $("#h2Select").value));
+  $("#aCheck").addEventListener("click", () => {
+    const ids = aEvents.map(x=>x.id);
+    const ok = ids.every((v,i)=>v===MINI_ORDER[i]);
+    SS.set("r7_lockA_ok", ok ? "1" : "0");
+    $("#aStatus").textContent = ok ? "Correct." : "Not yet.";
+  });
 
-  function step1Ok(){
-    const picks = Array.from(chosen);
+  // ---------- LOCK B: coalition tools ----------
+  const chosenB = new Set(JSON.parse(SS.get("r7_lockB_picks","[]")));
+  const bWrap = $("#bChips");
+  HEIST_TOOLS.forEach(opt => {
+    const c = document.createElement("div");
+    c.className = "chip" + (chosenB.has(opt.k) ? " active" : "");
+    c.textContent = opt.k;
+    c.addEventListener("click", () => {
+      if(chosenB.has(opt.k)) chosenB.delete(opt.k); else chosenB.add(opt.k);
+      c.classList.toggle("active");
+      SS.set("r7_lockB_picks", JSON.stringify(Array.from(chosenB)));
+      SS.set("r7_lockB_ok","0");
+      $("#bStatus").textContent = "Not checked yet.";
+    });
+    bWrap.appendChild(c);
+  });
+
+  $("#bCheck").addEventListener("click", () => {
+    const picks = Array.from(chosenB);
+    if(picks.length !== 3){
+      SS.set("r7_lockB_ok","0");
+      $("#bStatus").textContent = "Not yet: pick exactly 3.";
+      return;
+    }
     const tags = new Set();
     for(const p of picks){
-      const opt = HEIST_STEPS[0].options.find(o=>o.k===p);
+      const opt = HEIST_TOOLS.find(o=>o.k===p);
       if(opt) tags.add(opt.tag);
     }
-    return HEIST_STEPS[0].correctTags.every(t => tags.has(t)) && picks.length===3;
+    const ok = ["legal","protest","law"].every(t=>tags.has(t));
+    SS.set("r7_lockB_ok", ok ? "1" : "0");
+    $("#bStatus").textContent = ok ? "Correct." : "Not yet.";
+  });
+
+  // ---------- LOCK C: mini dossier ----------
+  $("#cCheck").addEventListener("click", () => {
+    const cCase = $("#cCase").value;
+    const cImp = $("#cImpact").value;
+    const ok = (cCase === MINI_DOSSIER.correctCase) && (cImp === MINI_DOSSIER.correctImpactId);
+    SS.set("r7_lockC_ok", ok ? "1" : "0");
+    $("#cStatus").textContent = ok ? "Correct." : "Not yet.";
+  });
+
+  // ---------- LOCK D: mini drag-drop ----------
+  const dBin = $("#dBin");
+  const dZones = $$("#lockD .dropZone");
+
+  function makeCard(c){
+    const d = document.createElement("div");
+    d.className = "card";
+    d.draggable = true;
+    d.dataset.id = c.id;
+    d.dataset.correct = c.correctZone;
+    d.textContent = c.text;
+    d.addEventListener("dragstart", (ev) => ev.dataTransfer.setData("text/plain", c.id));
+    return d;
   }
-  function step2Ok(){
-    const v = $("#h2Select").value;
-    if(v==="") return false;
-    return !!HEIST_STEPS[1].options[parseInt(v,10)].ok;
+  MINI_RESIST.forEach(c => dBin.appendChild(makeCard(c)));
+
+  dZones.forEach(z => {
+    z.addEventListener("dragover", (ev) => { ev.preventDefault(); z.classList.add("over"); });
+    z.addEventListener("dragleave", () => z.classList.remove("over"));
+    z.addEventListener("drop", (ev) => {
+      ev.preventDefault(); z.classList.remove("over");
+      const id = ev.dataTransfer.getData("text/plain");
+      const el = $(`#lockD .card[data-id="${CSS.escape(id)}"]`);
+      if(el) z.querySelector(".zoneBody").appendChild(el);
+      SS.set("r7_lockD_ok","0");
+      $("#dStatus").textContent="Not checked yet.";
+    });
+  });
+
+  $("#dCheck").addEventListener("click", () => {
+    // all 3 must be placed and correct (normalized compare)
+    let placed = 0, correct = 0;
+    dZones.forEach(z => {
+      const zoneName = z.dataset.zone;
+      z.querySelectorAll(".card").forEach(card => {
+        placed++;
+        if(normKey(card.dataset.correct) === normKey(zoneName)) correct++;
+      });
+    });
+    const ok = (placed === MINI_RESIST.length) && (correct === MINI_RESIST.length);
+    SS.set("r7_lockD_ok", ok ? "1" : "0");
+    $("#dStatus").textContent = ok ? "Correct." : `Not yet. (${correct}/${MINI_RESIST.length} correct)`;
+  });
+
+  // ---------- LOCK E: mini leaders ----------
+  const eWall = $("#eWall");
+  MINI_LEADERS.forEach((q, idx) => {
+    const block = document.createElement("div");
+    block.className = "status";
+    block.style.marginBottom = "10px";
+    block.innerHTML = `
+      <b>${escapeHTML(q.leader)}</b>
+      <div class="mini" style="margin-top:6px;">${escapeHTML(q.prompt)}</div>
+      <div style="margin-top:8px;">
+        <select id="e_${idx}">
+          <option value="">Select…</option>
+          ${q.options.map((o,i)=>`<option value="${i}">${escapeHTML(o)}</option>`).join("")}
+        </select>
+      </div>
+    `;
+    eWall.appendChild(block);
+  });
+
+  $("#eCheck").addEventListener("click", () => {
+    let answered = 0, correct = 0;
+    MINI_LEADERS.forEach((q, idx) => {
+      const v = $(`#e_${idx}`).value;
+      if(v!=="") answered++;
+      if(parseInt(v,10) === q.correctIndex) correct++;
+    });
+    const ok = (answered === MINI_LEADERS.length) && (correct === MINI_LEADERS.length);
+    SS.set("r7_lockE_ok", ok ? "1" : "0");
+    $("#eStatus").textContent = ok ? "Correct." : `Not yet. (${correct}/${MINI_LEADERS.length} correct)`;
+  });
+
+  // ---------- LOCK F: mini great society ----------
+  $("#fCheck").addEventListener("click", () => {
+    const v = $("#fSelect").value;
+    const exp = $("#fImpact").value.trim();
+    const chosen = MINI_GS.choices.find(c => c.key === v);
+    const expOk = exp.split(/\s+/).filter(Boolean).length >= 8;
+    const ok = !!(chosen && chosen.ok && expOk);
+    SS.set("r7_lockF_ok", ok ? "1" : "0");
+    $("#fStatus").textContent = ok ? "Correct." : "Not yet. (Make sure the program matches AND the impact sentence is specific.)";
+  });
+
+  // ---------- FINAL: code term generator ----------
+  function allLocksOk(){
+    return ["A","B","C","D","E","F"].every(k => SS.get(`r7_lock${k}_ok`,"0")==="1");
   }
 
-  function makeCode(){
-    const opened = locksOpenedCount();
-    const words = ["FREEDOM","RIGHTS","UNITY","VOTE"];
-    const w = words[(opened + (teksCovered.length%4)) % words.length];
+  function getUsedTerms(){
+    // Persist the “already used” list in localStorage so it survives refreshes if you ever turn RESET off later.
+    // Right now RESET_EVERY_LOAD wipes it anyway, but this is still correct behavior.
+    try{
+      return JSON.parse(localStorage.getItem("cr_code_used_terms") || "[]");
+    }catch(e){ return []; }
+  }
+  function setUsedTerms(arr){
+    localStorage.setItem("cr_code_used_terms", JSON.stringify(arr));
+  }
 
-    const modeChar = (DIFFICULTY==="honors") ? "X" : "S";
-    const a = w[0];
-    const b = w[w.length-1];
-    const c = modeChar;
-    const d = step1Ok() && step2Ok() ? "R" : "?";
-    return `${a}${b}${c}${d}`;
+  function drawNextCodeTerm(){
+    let used = getUsedTerms();
+
+    // If all used, do not allow repeats until we reset the cycle.
+    if(used.length >= CODE_TERMS.length){
+      used = [];
+      setUsedTerms(used);
+    }
+
+    const remaining = CODE_TERMS.filter(t => !used.includes(t));
+    const pick = remaining[Math.floor(Math.random()*remaining.length)];
+    used.push(pick);
+    setUsedTerms(used);
+    return pick;
   }
 
   $("#genCode").addEventListener("click", () => {
     const box = $("#hStatus");
-    if(!step1Ok()){
+    if(!allLocksOk()){
       box.className="status bad";
-      box.textContent="Step 1 not yet: pick exactly 3 items that cover legal + protest + legislation.";
-      return;
-    }
-    if(!step2Ok()){
-      box.className="status bad";
-      box.textContent="Step 2 not yet: choose the best cause→action→response→law chain.";
+      box.textContent="Not yet: you must pass Locks A–F (check each one).";
       return;
     }
 
-    const code = makeCode();
-    $("#finalCode").textContent = code;
+    const term = drawNextCodeTerm();
+    $("#finalCode").textContent = term;
 
     box.className="status good";
-    box.textContent="HEIST COMPLETE. Escape Code generated.";
+    box.textContent="MASTER LOCK COMPLETE. Unlock word generated.";
 
+    // Mark TEKS as “mastery pass”
     markTEKS(["9D","9E","9H","9I","9J"]);
     unlockRoom(6);
     saveState();
@@ -1895,12 +1967,12 @@ function renderRoom7(){
   }
   if(unlocked[6]){
     $("#hStatus").className="status good";
-    $("#hStatus").textContent="Final room already completed. You can regenerate the code anytime.";
+    $("#hStatus").textContent="Final room already completed. You can generate another unlock word once all locks are correct.";
   }
 }
 
 /* =========================
-   Mode toggle, reset, init
+   Buttons: mode/reset/init
 ========================= */
 $("#modeBtn").addEventListener("click", () => {
   DIFFICULTY = (DIFFICULTY==="honors") ? "standard" : "honors";
@@ -1912,23 +1984,22 @@ $("#modeBtn").addEventListener("click", () => {
 $("#resetBtn").addEventListener("click", () => {
   if(confirm("Reset the entire escape room progress?")){
     hardResetStorage();
-    // rebuild fresh session state
     unlocked = [false,false,false,false,false,false,false];
     currentRoom = 0;
     teksCovered = [];
+    DIFFICULTY = localStorage.getItem("cr_escape_mode") || "standard";
     saveState();
     animateStage();
     render();
   }
 });
 
-// Reset on every load (your request)
+// Reset on every load (your chosen behavior)
 if(RESET_EVERY_LOAD){
   hardResetStorage();
   unlocked = [false,false,false,false,false,false,false];
   currentRoom = 0;
   teksCovered = [];
-  // keep DIFFICULTY from localStorage? we wiped it above; restore default:
   DIFFICULTY = localStorage.getItem("cr_escape_mode") || "standard";
   saveState();
 }
